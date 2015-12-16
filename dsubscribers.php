@@ -1,13 +1,13 @@
 <?php
 /*
  * Plugin Name: DSubscribers
- * Version: 1.1
+ * Version: 1.2
  * Plugin URI: http://wp.dinamiko.com/demos/dsubscribers 
  * Description: Manage subscribers from your site with ease
  * Author: Emili Castells
  * Author URI: http://www.dinamiko.com
  * Requires at least: 3.9
- * Tested up to: 3.9.1
+ * Tested up to: 4.4
  */
 
 if ( ! defined( 'ABSPATH' ) ) exit;
@@ -18,7 +18,7 @@ require_once( 'includes/class-dsubscribers-table.php' );
 
 function DSubscribers () {
 
-	$instance = DSubscribers::instance( __FILE__, '1.1' );
+	$instance = DSubscribers::instance( __FILE__, '1.2' );
 	
 	if( is_null( $instance->settings ) ) {
 

@@ -2,8 +2,8 @@
 Contributors: dinamiko
 Tags: subscriber, subscribers, form, ajax, shortcode, subscription, subscribe, subscription
 Requires at least: 3.9
-Tested up to: 3.9.1
-Stable tag: 1.1
+Tested up to: 4.4
+Stable tag: 1.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -24,8 +24,6 @@ DSubscribers is a simple subscribers system that collects E-mails from your webs
 * Export subscribers as .csv 
 * Send success E-mail to the subscriber
 * v1.1 Use DSubscribers Widget
-
-Developers: place `<?php echo do_shortcode('[dsubscribers]'); ?>` in your templates
 
 == Installation ==
 
@@ -49,7 +47,7 @@ This plugin uses jQuery Validation Plugin
 http://jqueryvalidation.org/
 
 == Changelog ==
-
+= 1.2 =
+* Security improvements
 = 1.1 =
-
 * DSubscribers Widget
