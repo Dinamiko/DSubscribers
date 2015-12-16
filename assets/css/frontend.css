@@ -1,0 +1,35 @@
+/* form messages */
+
+.dsubscribers_error {
+	color:red;
+}
+
+.dsubscribers_success {
+	color:#41a62a;
+}
+
+/* email text field */
+
+#dsubscribers_email {
+	width:100%;
+	float:left;
+	margin-bottom:10px;
+}
+
+/* form submit button */
+
+#form-validation input[type="submit"] {
+
+}
+
+#form-validation input[type="submit"]:hover {
+
+}
+
+/* validation errors */
+
+#dsubscribers_email-error {
+	width:100%;
+	float:left;
+	margin-bottom:10px;	
+}

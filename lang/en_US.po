@@ -1,0 +1,127 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Dsubscribers\n"
+"POT-Creation-Date: 2014-07-23 20:02+0100\n"
+"PO-Revision-Date: 2014-07-23 20:02+0100\n"
+"Last-Translator: Emili Castells <wp@dinamiko.com>\n"
+"Language-Team: Emili Castells <emili.castells@dinamiko.com>\n"
+"Language: en_US\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.6.7\n"
+"X-Poedit-Basepath: .\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-KeywordsList: __;_e;_x\n"
+"X-Poedit-SearchPath-0: ..\n"
+
+#: ../includes/class-dsubscribers-list-table.php:34
+msgid "E-mail"
+msgstr ""
+
+#: ../includes/class-dsubscribers-list-table.php:35
+msgid "Created"
+msgstr ""
+
+#: ../includes/class-dsubscribers-list-table.php:36
+msgid "Actions"
+msgstr ""
+
+#: ../includes/class-dsubscribers-list-table.php:140
+msgid "Edit"
+msgstr ""
+
+#: ../includes/class-dsubscribers-list-table.php:141
+msgid "Delete"
+msgstr ""
+
+#: ../includes/class-dsubscribers-settings.php:36
+#: ../includes/class-dsubscribers-settings.php:311
+msgid "DSubscribers Settings"
+msgstr ""
+
+#: ../includes/class-dsubscribers-settings.php:46
+msgid "Settings"
+msgstr ""
+
+#: ../includes/class-dsubscribers-settings.php:56
+msgid "Subscriber E-mail"
+msgstr ""
+
+#: ../includes/class-dsubscribers-settings.php:62
+msgid "Send E-mail to subscriber"
+msgstr ""
+
+#: ../includes/class-dsubscribers-settings.php:70
+msgid "Message"
+msgstr ""
+
+#: ../includes/class-dsubscribers-settings.php:71
+msgid "This box accepts HTML tags"
+msgstr ""
+
+#: ../includes/class-dsubscribers-settings.php:82
+msgid "Form Messages"
+msgstr ""
+
+#: ../includes/class-dsubscribers-settings.php:88
+msgid "Subscribed"
+msgstr ""
+
+#: ../includes/class-dsubscribers-settings.php:92
+msgid "Subscribed message"
+msgstr ""
+
+#: ../includes/class-dsubscribers-settings.php:97
+msgid "Exists"
+msgstr ""
+
+#: ../includes/class-dsubscribers-settings.php:101
+msgid "Email already exists"
+msgstr ""
+
+#: ../includes/class-dsubscribers-settings.php:106
+msgid "Unsubscribed"
+msgstr ""
+
+#: ../includes/class-dsubscribers-settings.php:110
+msgid "Unsubscribed correctly"
+msgstr ""
+
+#: ../includes/class-dsubscribers-settings.php:115
+#: ../includes/class-dsubscribers-settings.php:119
+msgid "Subscriber don't exists"
+msgstr ""
+
+#: ../includes/class-dsubscribers-settings.php:266
+msgid "Upload an image"
+msgstr ""
+
+#: ../includes/class-dsubscribers-settings.php:266
+msgid "Use image"
+msgstr ""
+
+#: ../includes/class-dsubscribers-settings.php:266
+msgid "Upload new image"
+msgstr ""
+
+#: ../includes/class-dsubscribers-settings.php:267
+msgid "Remove image"
+msgstr ""
+
+#: ../includes/class-dsubscribers-settings.php:321
+msgid "Save Settings"
+msgstr ""
+
+#: ../includes/class-dsubscribers-settings.php:343
+#: ../includes/class-dsubscribers-settings.php:347
+#: ../includes/class-dsubscribers-table.php:186
+#: ../includes/class-dsubscribers-table.php:190
+#: ../includes/class-dsubscribers.php:323
+#: ../includes/class-dsubscribers.php:327
+msgid "Cheatin&#8217; huh?"
+msgstr ""
+
+#: ../includes/class-dsubscribers-table.php:50
+msgid "Email"
+msgstr ""
