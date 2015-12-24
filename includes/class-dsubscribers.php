@@ -233,7 +233,7 @@ class DSubscribers {
 
 			$dsubscribers_action = sanitize_text_field( $_POST['dsubscribers_action'] );
 			//$dsubscribers_email = wp_kses($_POST['dsubscribers_email']);
-			$dsubscribers_email = sanitize_email( $dsubscribers_email );
+			$dsubscribers_email = sanitize_email( $_POST['dsubscribers_email'] );
 
 			switch ( $dsubscribers_action ) {
 
