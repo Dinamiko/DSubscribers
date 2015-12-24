@@ -32,7 +32,7 @@ class DSubscribers_Table {
 
         <h2 style="position:relative;width:100%;float:left;margin-bottom:15px;">DSubscribers
 
-          <a style="position:absolute;top:10px;right:15px;" class="button-secondary" href="admin.php?page=dsubscribers&action=export">Export (.csv)</a>
+          <a style="position:absolute;top:10px;right:15px;" class="button-primary" href="admin.php?page=dsubscribers&action=export">Export (.csv)</a>
 
         </h2>
 
@@ -47,7 +47,7 @@ class DSubscribers_Table {
 
           <form id="dsubscribers-form" method="post">
 
-            <label><?php __( 'Email' , 'dsubscribers' );?>:</label>
+            <label><?php _e( 'Email' , 'dsubscribers' );?>:</label>
             <input type="text" name="email" id="email" value="<?php echo $row->email; ?>" />
 
             <div style="float:left; width:100%;margin-top:20px;">
