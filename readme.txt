@@ -17,13 +17,13 @@ DSubscribers is a simple subscribers system that collects E-mails from your webs
 
 = Features =
 
-* Use [dsubscribers] to show the subscribe form in your Pages and Posts.
-* Use [dsubscribers action="unsubscribe"] to show the unsubscribe form.
+* [dsubscribers] Adds Subscribe form in your Pages and Posts.
+* [dsubscribers action="unsubscribe"] Adds Unsubscribe form.
+* DSubscribers Widget
+* Send success E-mail to the subscriber
 * Edit or Delete subscribers
 * Search subscribers
 * Export subscribers as .csv 
-* Send success E-mail to the subscriber
-* v1.1 Use DSubscribers Widget
 
 == Installation ==
 
