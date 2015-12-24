@@ -22,8 +22,6 @@ jQuery(document).ready(function($) {
 			//var dsubscribers_nonce = $(this).find('#dsubscribers_nonce').val();
 
 			var dsubscribers_nonce = $('#dsubscribers_form_nonce').val();
-			//console.log(dsubscribers_action);
-			console.log(ajaxurl);
 
 		   	jQuery.ajax({
 
@@ -126,8 +124,6 @@ jQuery(document).ready(function($) {
 			//var dsubscribers_nonce = $(this).find('#dsubscribers_nonce').val();
 
 			var dsubscribers_nonce = $('#dsubscribers_form_nonce').val();
-			//console.log(dsubscribers_action);
-			console.log(ajaxurl);
 
 		   	jQuery.ajax({
 
