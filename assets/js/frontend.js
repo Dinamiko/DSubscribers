@@ -15,10 +15,15 @@ jQuery(document).ready(function($) {
 		
 		if( form.valid() ) {
 
-			var ajaxurl = $(this).attr('action');
+			//var ajaxurl = $(this).attr('action');
+			//var ajaxurl = ajaxurl;
 			var dsubscribers_action = $(this).find('#dsubscribers_action').val();
 			var dsubscribers_email = $(this).find('#dsubscribers_email').val();
-			var dsubscribers_nonce = $(this).find('#dsubscribers_nonce').val();
+			//var dsubscribers_nonce = $(this).find('#dsubscribers_nonce').val();
+
+			var dsubscribers_nonce = $('#dsubscribers_form_nonce').val();
+			//console.log(dsubscribers_action);
+			console.log(ajaxurl);
 
 		   	jQuery.ajax({
 
@@ -64,10 +69,11 @@ jQuery(document).ready(function($) {
 		
 		if( form_widget.valid() ) {
 
-			var ajaxurl = $(this).attr('action');
+			//var ajaxurl = $(this).attr('action');
 			var dsubscribers_action = $(this).find('#dsubscribers_action').val();
 			var dsubscribers_email = $(this).find('#dsubscribers_email').val();
-			var dsubscribers_nonce = $(this).find('#dsubscribers_nonce').val();
+			//var dsubscribers_nonce = $(this).find('#dsubscribers_nonce').val();
+			var dsubscribers_nonce = $('#dsubscribers_form_nonce').val();
 
 		   	jQuery.ajax({
 
@@ -92,6 +98,60 @@ jQuery(document).ready(function($) {
 
 		               $('#dsubscribers_msg_widget').html( response.msg );
 		               $('#dsubscribers_email_widget').val('');
+
+		            }
+		            
+		         }
+
+		    });		
+
+		}
+
+	});
+
+	var form_unsubscribe = $( "#form-validation-unsubscribe" );
+
+	form_unsubscribe.validate();
+
+	$( "#form-validation-unsubscribe" ).submit(function(e) {
+
+		e.preventDefault();
+		
+		if( form_unsubscribe.valid() ) {
+
+			//var ajaxurl = $(this).attr('action');
+			//var ajaxurl = ajaxurl;
+			var dsubscribers_action = $(this).find('#dsubscribers_action').val();
+			var dsubscribers_email = $(this).find('#dsubscribers_email').val();
+			//var dsubscribers_nonce = $(this).find('#dsubscribers_nonce').val();
+
+			var dsubscribers_nonce = $('#dsubscribers_form_nonce').val();
+			//console.log(dsubscribers_action);
+			console.log(ajaxurl);
+
+		   	jQuery.ajax({
+
+		         type : 'post',
+		         dataType : 'json',
+		         url : ajaxurl,
+		         data : { 	action: 'dsubscribers_ajax', 
+		         			dsubscribers_action:dsubscribers_action, 
+		         			dsubscribers_email:dsubscribers_email,
+		         			dsubscribers_nonce:dsubscribers_nonce 
+		         		},
+
+		         success: function( response ) {
+
+		            if( response.type == 'success' ) {
+
+		            	$('#dsubscribers_unsubscribe_msg').html( response.msg );
+		            	$('#dsubscribers_email').val('');
+
+
+		            } else {
+
+		               $('#dsubscribers_unsubscribe_msg').html( response.msg );
+		               $('#dsubscribers_email').val('');
 
 		            }
 		            

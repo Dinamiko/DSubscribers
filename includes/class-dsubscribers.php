@@ -222,16 +222,17 @@ class DSubscribers {
 
 	public function dsubscribers_ajax () {
 
- 		$nonce = $_REQUEST['dsubscribers_nonce'];
+ 		//$nonce = $_REQUEST['dsubscribers_nonce'];
 
-		if ( ! wp_verify_nonce( $nonce, 'dsubscribers_nonce' ) ) {
+		if ( ! isset( $_POST['dsubscribers_nonce'] ) || ! wp_verify_nonce( $_POST['dsubscribers_nonce'], 'dsubscribers_form_action' ) ) {
+		//if ( ! wp_verify_nonce( $nonce, 'dsubscribers_nonce' ) ) {   
 
-		     die( 'Security check' ); 
+		    die( 'Security check' ); 
 
 		} else {
 
-			$dsubscribers_action = $_REQUEST['dsubscribers_action'];
-			$dsubscribers_email = sanitize_email( $_REQUEST['dsubscribers_email'] );
+			$dsubscribers_action = sanitize_text_field( $_POST['dsubscribers_action'] );
+			$dsubscribers_email = sanitize_email( $_POST['dsubscribers_email'] );
 
 			switch ( $dsubscribers_action ) {
 
@@ -364,8 +365,10 @@ class DSubscribers {
 
 	    ), $atts );
 		
+		/*
 		$nonce = wp_create_nonce("dsubscribers_nonce");
 		$link = admin_url('admin-ajax.php?action=dsubscribers_ajax');
+		*/
 
 		$content = '<div id="dsubscribers-container">';
 
@@ -375,8 +378,10 @@ class DSubscribers {
 
 				$content .= '<p id="dsubscribers_msg_widget"></p>';
 
-				$content .= '<form id="form-validation-widget" class="form-container" method="post" action="'. $link .'">';			
+				//$content .= '<form id="form-validation-widget" class="form-container" method="post" action="'. $link .'">';
+				$content .= '<form id="form-validation-widget" class="form-container" data-action="">';			
 
+					// TODO escape
 					$content .= '<input id="dsubscribers_email" type="email" name="email" placeholder="E-mail" required>';
 
 					$content .= '<input type="submit" value="SUBMIT">';
@@ -393,17 +398,28 @@ class DSubscribers {
 
 				    }
 
-				    $content .= '<input type="hidden" id="dsubscribers_nonce" name="dsubscribers_nonce" value="'. $nonce .'" />';
+				    //$content .= '<input type="hidden" id="dsubscribers_nonce" name="dsubscribers_nonce" value="'. $nonce .'" />';
+				    $content .= wp_nonce_field( 'dsubscribers_form_action', 'dsubscribers_form_nonce' );
 
 				$content .= '</form>';
 
 
 			} else {
 
-				$content .= '<p id="dsubscribers_msg"></p>';
+				if( $a['action'] == 'unsubscribe' ) {
 
-				$content .= '<form id="form-validation" class="form-container" method="post" action="'. $link .'">';			
+					$content .= '<p id="dsubscribers_unsubscribe_msg"></p>';
+					$content .= '<form id="form-validation-unsubscribe" class="form-container">';
 
+				} else {
+
+					$content .= '<p id="dsubscribers_msg"></p>';
+					$content .= '<form id="form-validation" class="form-container">';
+
+				}
+
+				//$content .= '<form id="form-validation" class="form-container" method="post" action="'. $link .'">';			
+				//$content .= '<form id="form-validation" class="form-container">';
 					$content .= '<input id="dsubscribers_email" type="email" name="email" placeholder="E-mail" required>';
 
 					$content .= '<input type="submit" value="SUBMIT">';
@@ -420,7 +436,8 @@ class DSubscribers {
 
 				    }
 
-				    $content .= '<input type="hidden" id="dsubscribers_nonce" name="dsubscribers_nonce" value="'. $nonce .'" />';
+				    //$content .= '<input type="hidden" id="dsubscribers_nonce" name="dsubscribers_nonce" value="'. $nonce .'" />';
+				    $content .= wp_nonce_field( 'dsubscribers_form_action', 'dsubscribers_form_nonce' );
 
 				$content .= '</form>';			
 
