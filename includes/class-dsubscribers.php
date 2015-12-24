@@ -232,7 +232,8 @@ class DSubscribers {
 		} else {
 
 			$dsubscribers_action = sanitize_text_field( $_POST['dsubscribers_action'] );
-			$dsubscribers_email = sanitize_email( $_POST['dsubscribers_email'] );
+			$dsubscribers_email = wp_kses($_POST['dsubscribers_email']);
+			$dsubscribers_email = sanitize_email( $dsubscribers_email );
 
 			switch ( $dsubscribers_action ) {
 
@@ -264,7 +265,7 @@ class DSubscribers {
 					} else {
 
 						$result['type'] = 'error';
-			      		$result['msg'] = '<span class="dsubscribers_error">'. get_option( 'dsubscribers_dont_exists_msg', 'Sorry, subscriber don\'t exists' ) .'</span>';
+			      		$result['msg'] = '<span class="dsubscribers_error">'. get_option( 'dsubscribers_dont_exists_msg', 'Sorry, subscriber doesn\'t exists' ) .'</span>';
 
 						$result = json_encode( $result );
 						echo $result;

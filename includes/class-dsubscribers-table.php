@@ -48,10 +48,10 @@ class DSubscribers_Table {
           <form id="dsubscribers-form" method="post">
 
             <label><?php _e( 'Email' , 'dsubscribers' );?>:</label>
-            <input type="text" name="email" id="email" value="<?php echo $row->email; ?>" />
+            <input type="text" name="email" id="email" value="<?php echo esc_attr( $row->email ); ?>" />
 
             <div style="float:left; width:100%;margin-top:20px;">
-              <input type="hidden" name="dsubscribers_id" value="<?php echo $row->id; ?>" />
+              <input type="hidden" name="dsubscribers_id" value="<?php echo esc_attr( $row->id ); ?>" />
               <input type="submit" class="button-primary" value="Save"></input>
             </div>
 
@@ -97,8 +97,8 @@ class DSubscribers_Table {
 
     if( isset( $_POST['dsubscribers_id'] ) ) {
 
-      $id = $_POST['dsubscribers_id'];
-      $email = $_POST['email'];
+      $id = intval($_POST['dsubscribers_id']);
+      $email = wp_kses($_POST['email']);
 
       global $wpdb;
       $table_name = $wpdb->prefix . "dsubscribers";
