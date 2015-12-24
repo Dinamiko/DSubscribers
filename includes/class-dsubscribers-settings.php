@@ -175,6 +175,10 @@ class DSubscribers_Settings {
 		$option_name = $this->base . $field['id'];
 		$option = get_option( $option_name );
 
+		echo '$option_name: '.$option_name.'<br>';
+		echo '$option: '.$option.'<br>';
+		echo '$field["default"]: '.$field['default'].'<br>';
+
 		$data = '';
 
 		if( isset( $field['default'] ) ) {

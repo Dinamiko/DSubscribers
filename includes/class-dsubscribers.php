@@ -39,7 +39,7 @@ class DSubscribers {
 		register_activation_hook( $this->file, array( $this, 'dsubscribers_database_install' ) );
 
 		// TODO
-		//add_action( 'plugins_loaded', array( $this, 'myplugin_update_db_check' ), 10, 1 );
+		//add_action( 'plugins_loaded', array( $this, 'dsubscribers_update_db_check' ), 10, 1 );
 
 		add_action('wp_head', array( $this, 'dsubscribers_ajaxurl' ) );	
 
@@ -52,6 +52,89 @@ class DSubscribers {
 
 		add_action( 'widgets_init', array( $this, 'register_dsubscribers_widget' ) );
 
+		// sanitizes dsubscribers options
+		add_action( 'init', array( $this, 'dsubscribers_sanitize_options' ) );
+
+
+	}
+
+	/**
+	* adds filter pre_update_option_{option}
+	*/
+	public function dsubscribers_sanitize_options() {
+
+		add_filter( 'pre_update_option_dsubscribers_send_checkbox', array( $this, 'dsubscribers_update_field_dsubscribers_send_checkbox'), 10, 2 );
+		add_filter( 'pre_update_option_dsubscribers_message_block', array( $this, 'dsubscribers_update_field_dsubscribers_message_block'), 10, 2 );
+		add_filter( 'pre_update_option_dsubscribers_subscribed_msg', array( $this, 'dsubscribers_update_field_dsubscribers_subscribed_msg'), 10, 2 );
+		add_filter( 'pre_update_option_dsubscribers_exists_msg', array( $this, 'dsubscribers_update_field_dsubscribers_exists_msg'), 10, 2 );
+		add_filter( 'pre_update_option_dsubscribers_unsubscribed_msg', array( $this, 'dsubscribers_update_field_dsubscribers_unsubscribed_msg'), 10, 2 );
+		add_filter( 'pre_update_option_dsubscribers_dont_exists_msg', array( $this, 'dsubscribers_update_field_dsubscribers_dont_exists_msg'), 10, 2 );
+		
+	}
+
+	/**
+	* sanitizes dsubscribers_send_checkbox option
+	*/
+	public function dsubscribers_update_field_dsubscribers_send_checkbox( $new_value, $old_value ) {
+		$new_value = sanitize_text_field( $new_value );	
+		return $new_value;
+	}
+
+	/**
+	* sanitizes dsubscribers_message_block option
+	*/
+	public function dsubscribers_update_field_dsubscribers_message_block( $new_value, $old_value ) {
+	
+		$arr = array(
+		    'a' => array(
+		        'href' => array(),
+		        'title' => array()
+		    ),
+		    'br' => array(),
+		    'em' => array(),
+		    'strong' => array(),
+		    'p' => array(),
+		    'h1' => array(),
+		    'h2' => array(),
+		    'h3' => array(),
+		    'h4' => array(),
+		);
+
+		$new_value = wp_kses( $new_value, $arr );		
+
+		return $new_value;
+	}
+
+	/**
+	* sanitizes dsubscribers_subscribed_msg option
+	*/
+	public function dsubscribers_update_field_dsubscribers_subscribed_msg( $new_value, $old_value ) {
+		$new_value = sanitize_text_field( $new_value );	
+		return $new_value;
+	}
+
+	/**
+	* sanitizes dsubscribers_exists_msg option
+	*/
+	public function dsubscribers_update_field_dsubscribers_exists_msg( $new_value, $old_value ) {
+		$new_value = sanitize_text_field( $new_value );	
+		return $new_value;
+	}
+
+	/**
+	* sanitizes dsubscribers_unsubscribed_msg option
+	*/
+	public function dsubscribers_update_field_dsubscribers_unsubscribed_msg( $new_value, $old_value ) {
+		$new_value = sanitize_text_field( $new_value );	
+		return $new_value;
+	}
+
+	/**
+	* sanitizes dsubscribers_dont_exists_msg option
+	*/
+	public function dsubscribers_update_field_dsubscribers_dont_exists_msg( $new_value, $old_value ) {
+		$new_value = sanitize_text_field( $new_value );	
+		return $new_value;
 	}
 
 	public function register_dsubscribers_widget() {
@@ -114,7 +197,7 @@ class DSubscribers {
 	}
 
 	/* TODO
-	public function myplugin_update_db_check() {
+	public function dsubscribers_update_db_check() {
 
     	global $jal_db_version;
 
@@ -342,13 +425,6 @@ class DSubscribers {
 				$content .= '</form>';			
 
 			}
-
-
-
-
-
-
-
 
 		$content .= '</div>';
 
