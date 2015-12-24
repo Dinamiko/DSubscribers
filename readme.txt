@@ -23,7 +23,13 @@ DSubscribers is a simple subscribers system that collects E-mails from your webs
 * Send success E-mail to the subscriber
 * Edit or Delete subscribers
 * Search subscribers
-* Export subscribers as .csv 
+* Export subscribers as .csv
+
+= Related Plugins by Dinamiko =
+* <a href="https://wordpress.org/plugins/dportfolio/">DK PDF</a>
+* <a href="https://wordpress.org/plugins/dk-pdf/">DK PDF</a>
+* <a href="http://wp.dinamiko.com/demos/dkpdf-generator/">DK PDF Generator (Pro)</a>
+* <a href="https://wordpress.org/plugins/docu/">Docu</a> 
 
 == Installation ==
 
