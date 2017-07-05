@@ -10,7 +10,7 @@ class DSubscribers_Table {
   public function __construct ( $parent ) {
 
       $this->parent = $parent;
-   
+
       add_action( 'admin_menu', array( $this, 'register_dsubscribers_menu_page' ) );
 
       add_action('init', array( $this, 'dsubscribers_update' ) );
@@ -22,12 +22,11 @@ class DSubscribers_Table {
 
   public function register_dsubscribers_menu_page (){
 
-      add_menu_page( 'DSubscribers', 'DSubscribers', 'manage_options', 'dsubscribers', array( $this, 'dsubscribers_menu_page' ), 'dashicons-groups' ); 
+      add_menu_page( 'DSubscribers', 'DSubscribers', 'manage_options', 'dsubscribers', array( $this, 'dsubscribers_menu_page' ), 'dashicons-groups' );
 
   }
 
   public function dsubscribers_menu_page () { ?>
-
       <div class="wrap">
 
         <h2 style="position:relative;width:100%;float:left;margin-bottom:15px;">DSubscribers
@@ -36,14 +35,16 @@ class DSubscribers_Table {
 
         </h2>
 
+
       <?php if( isset($_GET['dsubscribers']) && $_GET['action'] == 'edit' ) {
 
-          $id = $_GET['dsubscribers'];
+          $id = intval( $_GET['dsubscribers'] );
 
           global $wpdb;
           $table_name = $wpdb->prefix . "dsubscribers";
 
-          $row = $wpdb->get_row("SELECT * FROM $table_name WHERE id=$id"); ?>
+          $row = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $table_name WHERE id=%d", $id ) );
+          ?>
 
           <form id="dsubscribers-form" method="post">
 
@@ -55,7 +56,7 @@ class DSubscribers_Table {
               <input type="submit" class="button-primary" value="Save"></input>
             </div>
 
-          </form>         
+          </form>
 
       <?php } ?>
 
@@ -71,7 +72,7 @@ class DSubscribers_Table {
 
           $wp_list_table->prepare_items();
 
-      } 
+      }
 
       ?>
 
@@ -86,7 +87,7 @@ class DSubscribers_Table {
       </form>
 
 
- 
+
       <?php $wp_list_table->display(); ?>
 
       </div>
@@ -103,12 +104,12 @@ class DSubscribers_Table {
       global $wpdb;
       $table_name = $wpdb->prefix . "dsubscribers";
 
-      $wpdb->update( 
-        $table_name,  
-        array( 'email' => $email ), 
-        array( 'ID' => $id ), 
-        array( '%s' ), 
-        array( '%d' ) 
+      $wpdb->update(
+        $table_name,
+        array( 'email' => $email ),
+        array( 'ID' => $id ),
+        array( '%s' ),
+        array( '%d' )
       );
 
       $paged = !empty($_GET["paged"]) ? mysql_real_escape_string($_GET["paged"]) : '';
@@ -117,15 +118,13 @@ class DSubscribers_Table {
     }
 
   }
- 
+
   public function dsubscribers_delete () {
 
     if( isset($_GET['dsubscribers']) && $_GET['action'] == 'delete' ) {
 
-        //echo $_GET['dsubscribers'];
-
         global $wpdb;
-        $id = $_GET['dsubscribers'];
+        $id = intval( $_GET['dsubscribers'] );
         $table_name = $wpdb->prefix . "dsubscribers";
 
         $wpdb->delete( $table_name, array( 'ID' => $id ), array( '%d' ) );
@@ -188,6 +187,6 @@ class DSubscribers_Table {
 
   public function __wakeup () {
     _doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; huh?' ), $this->parent->_version );
-  } 
+  }
 
 }

@@ -2,8 +2,8 @@
 Contributors: dinamiko
 Tags: subscriber, subscribers, form, ajax, shortcode, subscription, subscribe, subscription
 Requires at least: 3.9
-Tested up to: 4.4
-Stable tag: 1.2
+Tested up to: 4.8
+Stable tag: 1.2.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -29,11 +29,11 @@ DSubscribers is a simple subscribers system that collects E-mails from your webs
 * <a href="https://wordpress.org/plugins/dportfolio/">DK PDF</a>
 * <a href="https://wordpress.org/plugins/dk-pdf/">DK PDF</a>
 * <a href="http://wp.dinamiko.com/demos/dkpdf-generator/">DK PDF Generator (Pro)</a>
-* <a href="https://wordpress.org/plugins/docu/">Docu</a> 
+* <a href="https://wordpress.org/plugins/docu/">Docu</a>
 
 == Installation ==
 
-1. Upload the folder `dsubscribers` to the directory `/wp-content/plugins/` 
+1. Upload the folder `dsubscribers` to the directory `/wp-content/plugins/`
 2. Activate the plugin via the 'Plugins' menu in WordPress
 
 == Screenshots ==
@@ -53,6 +53,8 @@ This plugin uses jQuery Validation Plugin
 http://jqueryvalidation.org/
 
 == Changelog ==
+= 1.2.1 =
+* Fix SQL injection in dsubscribers get parameter, thanks to @lenonleite
 = 1.2 =
 * Security improvements
 = 1.1 =
