@@ -41,14 +41,14 @@ class DSubscribers {
 		// TODO
 		//add_action( 'plugins_loaded', array( $this, 'dsubscribers_update_db_check' ), 10, 1 );
 
-		add_action('wp_head', array( $this, 'dsubscribers_ajaxurl' ) );	
+		add_action('wp_head', array( $this, 'dsubscribers_ajaxurl' ) );
 
 		add_shortcode( 'dsubscribers', array( $this, 'dsubscribers_shortcode' ) );
-	
+
 		add_action('wp_ajax_dsubscribers_ajax', array( $this, 'dsubscribers_ajax' ) );
 		add_action('wp_ajax_nopriv_dsubscribers_ajax', array( $this, 'dsubscribers_ajax' ) );
 
-		add_filter('wp_mail_content_type', create_function('', 'return "text/html";'));
+		//add_filter('wp_mail_content_type', create_function('', 'return "text/html";'));
 
 		add_action( 'widgets_init', array( $this, 'register_dsubscribers_widget' ) );
 
@@ -69,14 +69,14 @@ class DSubscribers {
 		add_filter( 'pre_update_option_dsubscribers_exists_msg', array( $this, 'dsubscribers_update_field_dsubscribers_exists_msg'), 10, 2 );
 		add_filter( 'pre_update_option_dsubscribers_unsubscribed_msg', array( $this, 'dsubscribers_update_field_dsubscribers_unsubscribed_msg'), 10, 2 );
 		add_filter( 'pre_update_option_dsubscribers_dont_exists_msg', array( $this, 'dsubscribers_update_field_dsubscribers_dont_exists_msg'), 10, 2 );
-		
+
 	}
 
 	/**
 	* sanitizes dsubscribers_send_checkbox option
 	*/
 	public function dsubscribers_update_field_dsubscribers_send_checkbox( $new_value, $old_value ) {
-		$new_value = sanitize_text_field( $new_value );	
+		$new_value = sanitize_text_field( $new_value );
 		return $new_value;
 	}
 
@@ -84,7 +84,7 @@ class DSubscribers {
 	* sanitizes dsubscribers_message_block option
 	*/
 	public function dsubscribers_update_field_dsubscribers_message_block( $new_value, $old_value ) {
-	
+
 		$arr = array(
 		    'a' => array(
 		        'href' => array(),
@@ -100,7 +100,7 @@ class DSubscribers {
 		    'h4' => array(),
 		);
 
-		$new_value = wp_kses( $new_value, $arr );		
+		$new_value = wp_kses( $new_value, $arr );
 
 		return $new_value;
 	}
@@ -109,7 +109,7 @@ class DSubscribers {
 	* sanitizes dsubscribers_subscribed_msg option
 	*/
 	public function dsubscribers_update_field_dsubscribers_subscribed_msg( $new_value, $old_value ) {
-		$new_value = sanitize_text_field( $new_value );	
+		$new_value = sanitize_text_field( $new_value );
 		return $new_value;
 	}
 
@@ -117,7 +117,7 @@ class DSubscribers {
 	* sanitizes dsubscribers_exists_msg option
 	*/
 	public function dsubscribers_update_field_dsubscribers_exists_msg( $new_value, $old_value ) {
-		$new_value = sanitize_text_field( $new_value );	
+		$new_value = sanitize_text_field( $new_value );
 		return $new_value;
 	}
 
@@ -125,7 +125,7 @@ class DSubscribers {
 	* sanitizes dsubscribers_unsubscribed_msg option
 	*/
 	public function dsubscribers_update_field_dsubscribers_unsubscribed_msg( $new_value, $old_value ) {
-		$new_value = sanitize_text_field( $new_value );	
+		$new_value = sanitize_text_field( $new_value );
 		return $new_value;
 	}
 
@@ -133,7 +133,7 @@ class DSubscribers {
 	* sanitizes dsubscribers_dont_exists_msg option
 	*/
 	public function dsubscribers_update_field_dsubscribers_dont_exists_msg( $new_value, $old_value ) {
-		$new_value = sanitize_text_field( $new_value );	
+		$new_value = sanitize_text_field( $new_value );
 		return $new_value;
 	}
 
@@ -148,7 +148,7 @@ class DSubscribers {
 	public function enqueue_styles () {
 		wp_register_style( $this->_token . '-frontend', esc_url( $this->assets_url ) . 'css/frontend.css', array(), $this->_version );
 		wp_enqueue_style( $this->_token . '-frontend' );
-	} 
+	}
 
 	public function enqueue_scripts () {
 
@@ -157,12 +157,12 @@ class DSubscribers {
 
 		wp_register_script( $this->_token . '-frontend', esc_url( $this->assets_url ) . 'js/frontend.js', array( 'jquery' ), $this->_version, true );
 		wp_enqueue_script( $this->_token . '-frontend' );
-		
-	}  
+
+	}
 
 	public function load_localisation () {
 		load_plugin_textdomain( 'dsubscribers', false, dirname( plugin_basename( $this->file ) ) . '/lang/' );
-	} 
+	}
 
 	public function load_plugin_textdomain () {
 
@@ -191,7 +191,7 @@ class DSubscribers {
 
 	  	require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 	  	dbDelta( $sql );
-	 
+
 	  	add_option( "jal_db_version", $jal_db_version );
 
 	}
@@ -210,24 +210,24 @@ class DSubscribers {
 	}
 	*/
 
-	public function dsubscribers_ajaxurl() { ?>	
+	public function dsubscribers_ajaxurl() { ?>
 
 		<script type="text/javascript">
 
 			var ajaxurl = '<?php echo admin_url('admin-ajax.php'); ?>';
 
 		</script>
-	
-	<?php } 
+
+	<?php }
 
 	public function dsubscribers_ajax () {
 
  		//$nonce = $_REQUEST['dsubscribers_nonce'];
 
 		if ( ! isset( $_POST['dsubscribers_nonce'] ) || ! wp_verify_nonce( $_POST['dsubscribers_nonce'], 'dsubscribers_form_action' ) ) {
-		//if ( ! wp_verify_nonce( $nonce, 'dsubscribers_nonce' ) ) {   
+		//if ( ! wp_verify_nonce( $nonce, 'dsubscribers_nonce' ) ) {
 
-		    die( 'Security check' ); 
+		    die( 'Security check' );
 
 		} else {
 
@@ -245,7 +245,7 @@ class DSubscribers {
 					// get id from email
 					$row = $wpdb->get_row("SELECT * FROM $table_name WHERE email='$dsubscribers_email'");
 
-					if( $row ) {					
+					if( $row ) {
 
 						$id = $row->id;
 
@@ -258,7 +258,7 @@ class DSubscribers {
 
 						$result = json_encode( $result );
 						echo $result;
-							
+
 						die();
 
 
@@ -272,34 +272,34 @@ class DSubscribers {
 
 						die();
 
-					}			
-				
+					}
+
 				default:
 
 					global $wpdb;
 					$table_name = $wpdb->prefix . "dsubscribers";
 
 					$emails = $wpdb->get_results( "SELECT * FROM $table_name" );
-						
+
 					// if email exists -> redirect and show message exists
 
 					foreach ( $emails as $email ) {
 
 						if ( $email->email == $dsubscribers_email ) {
-							
+
 							$result['type'] = 'error';
 			      			$result['msg'] = '<span class="dsubscribers_error">'. get_option( 'dsubscribers_exists_msg', 'Sorry, this e-mail already exists' ) .'</span>';
 
 							$result = json_encode( $result );
 							echo $result;
-							
-							die();																	
 
-						} 
+							die();
+
+						}
 
 					}
 
-					// if email don't exists -> insert data to wp_dsubscribers table 
+					// if email don't exists -> insert data to wp_dsubscribers table
 					// and redirect with message created
 
 					$inserted = $wpdb->insert (
@@ -317,7 +317,7 @@ class DSubscribers {
 							)
 
 					);
-							
+
 					if( $inserted ){
 
 						$insert_id = $wpdb->insert_id;
@@ -329,21 +329,21 @@ class DSubscribers {
 							$subject = 'The subject';
 
 							$message = get_option( 'dsubscribers_message_block' );
-								
+
 							$headers = 'From: '. get_bloginfo( 'name' ) .' <'. get_bloginfo( 'admin_email' ) .'>';
 
 							wp_mail( $dsubscribers_email, $subject, $message, $headers );
 
 						}
-					
+
 						$result['type'] = 'success';
 			      		$result['msg'] = '<span class="dsubscribers_success">'. get_option( 'dsubscribers_subscribed_msg', 'Thank you for subscribing!' ) .'</span>';
 
 						$result = json_encode( $result );
 						echo $result;
-							
+
 						die();
-							
+
 					}
 
 					break;
@@ -365,7 +365,7 @@ class DSubscribers {
 	        'type' => ''
 
 	    ), $atts );
-		
+
 		/*
 		$nonce = wp_create_nonce("dsubscribers_nonce");
 		$link = admin_url('admin-ajax.php?action=dsubscribers_ajax');
@@ -380,19 +380,19 @@ class DSubscribers {
 				$content .= '<p id="dsubscribers_msg_widget"></p>';
 
 				//$content .= '<form id="form-validation-widget" class="form-container" method="post" action="'. $link .'">';
-				$content .= '<form id="form-validation-widget" class="form-container" data-action="">';			
+				$content .= '<form id="form-validation-widget" class="form-container" data-action="">';
 
 					// TODO escape
 					$content .= '<input id="dsubscribers_email" type="email" name="email" placeholder="E-mail" required>';
 
 					$content .= '<input type="submit" value="SUBMIT">';
-				    
+
 				    switch ( $a['action'] ) {
 
 				     	case 'unsubscribe':
 				     		$content .= '<input type="hidden" id="dsubscribers_action" name="dsubscribers_action" value="unsubscribe" />';
 				     		break;
-				     	
+
 				     	default:
 				     		$content .= '<input type="hidden" id="dsubscribers_action" name="dsubscribers_action" value="action_form" />';
 				     		break;
@@ -419,18 +419,18 @@ class DSubscribers {
 
 				}
 
-				//$content .= '<form id="form-validation" class="form-container" method="post" action="'. $link .'">';			
+				//$content .= '<form id="form-validation" class="form-container" method="post" action="'. $link .'">';
 				//$content .= '<form id="form-validation" class="form-container">';
 					$content .= '<input id="dsubscribers_email" type="email" name="email" placeholder="E-mail" required>';
 
 					$content .= '<input type="submit" value="SUBMIT">';
-				    
+
 				    switch ( $a['action'] ) {
 
 				     	case 'unsubscribe':
 				     		$content .= '<input type="hidden" id="dsubscribers_action" name="dsubscribers_action" value="unsubscribe" />';
 				     		break;
-				     	
+
 				     	default:
 				     		$content .= '<input type="hidden" id="dsubscribers_action" name="dsubscribers_action" value="action_form" />';
 				     		break;
@@ -440,7 +440,7 @@ class DSubscribers {
 				    //$content .= '<input type="hidden" id="dsubscribers_nonce" name="dsubscribers_nonce" value="'. $nonce .'" />';
 				    $content .= wp_nonce_field( 'dsubscribers_form_action', 'dsubscribers_form_nonce' );
 
-				$content .= '</form>';			
+				$content .= '</form>';
 
 			}
 
@@ -462,11 +462,11 @@ class DSubscribers {
 			self::$_instance = new self( $file, $version );
 		}
 		return self::$_instance;
-	} 
+	}
 
 	public function __clone () {
 		_doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; huh?' ), $this->_version );
-	} 
+	}
 
 	public function __wakeup () {
 		_doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; huh?' ), $this->_version );
@@ -474,6 +474,6 @@ class DSubscribers {
 
 	private function _log_version_number () {
 		update_option( $this->_token . '_version', $this->_version );
-	} 
+	}
 
 }

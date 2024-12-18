@@ -32,10 +32,15 @@ class DSubscribers_Settings {
 	}
 
 	public function add_menu_item () {
+        $page = add_options_page(
+                __('DSubscribers Settings', 'dsubscribers'),
+                __('DSubscribers Settings', 'dsubscribers'),
+                'manage_options',
+                'dsubscribers_settings',
+                array($this, 'settings_page')
+        );
 
-		$page = add_options_page( __( 'DSubscribers Settings', 'dsubscribers' ) , __( 'DSubscribers Settings', 'dsubscribers' ) , 'manage_options' , 'dsubscribers_settings' ,  array( $this, 'settings_page' ) );
 		add_action( 'admin_print_styles-' . $page, array( $this, 'settings_assets' ) );
-
 	}
 
 	public function settings_assets () {}
@@ -150,7 +155,7 @@ class DSubscribers_Settings {
 					register_setting( 'dsubscribers_settings', $option_name, $validation );
 
 					add_settings_field( $field['id'], $field['label'], array( $this, 'display_field' ), 'dsubscribers_settings', $section, array( 'field' => $field ) );
-				
+
 				}
 
 			}
@@ -345,6 +350,6 @@ class DSubscribers_Settings {
 
 	public function __wakeup () {
 		_doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; huh?' ), $this->parent->_version );
-	} 
+	}
 
 }

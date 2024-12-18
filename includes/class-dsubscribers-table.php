@@ -99,7 +99,7 @@ class DSubscribers_Table {
     if( isset( $_POST['dsubscribers_id'] ) ) {
 
       $id = intval($_POST['dsubscribers_id']);
-      $email = wp_kses($_POST['email']);
+      $email = sanitize_email($_POST['email']);
 
       global $wpdb;
       $table_name = $wpdb->prefix . "dsubscribers";
@@ -112,7 +112,7 @@ class DSubscribers_Table {
         array( '%d' )
       );
 
-      $paged = !empty($_GET["paged"]) ? mysql_real_escape_string($_GET["paged"]) : '';
+      $paged = !empty($_GET["paged"]) ? sanitize_text_field($_GET["paged"]) : '';
       header("Location:admin.php?page=dsubscribers&paged=$paged");
 
     }
@@ -129,7 +129,7 @@ class DSubscribers_Table {
 
         $wpdb->delete( $table_name, array( 'ID' => $id ), array( '%d' ) );
 
-        $paged = !empty($_GET["paged"]) ? mysql_real_escape_string($_GET["paged"]) : '';
+        $paged = !empty($_GET["paged"]) ? sanitize_text_field($_GET["paged"]) : '';
         header("Location:admin.php?page=dsubscribers&paged=$paged");
 
     }

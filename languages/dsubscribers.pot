@@ -1,0 +1,143 @@
+# Copyright (C) 2024 Emili Castells
+# This file is distributed under the same license as the DSubscribers plugin.
+msgid ""
+msgstr ""
+"Project-Id-Version: DSubscribers 1.2.2\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/DSubscribers\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2024-12-18T17:36:27+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.10.0\n"
+"X-Domain: dsubscribers\n"
+
+#. Plugin Name of the plugin
+#: dsubscribers.php
+#: includes/class-dsubscribers-widget.php:11
+#: includes/class-dsubscribers-widget.php:12
+msgid "DSubscribers"
+msgstr ""
+
+#. Description of the plugin
+#: dsubscribers.php
+msgid "Manage subscribers from your site with ease"
+msgstr ""
+
+#. Author of the plugin
+#: dsubscribers.php
+msgid "Emili Castells"
+msgstr ""
+
+#. Author URI of the plugin
+#: dsubscribers.php
+msgid "https://dinamiko.dev"
+msgstr ""
+
+#: includes/class-dsubscribers-list-table.php:34
+msgid "E-mail"
+msgstr ""
+
+#: includes/class-dsubscribers-list-table.php:35
+msgid "Created"
+msgstr ""
+
+#: includes/class-dsubscribers-list-table.php:36
+msgid "Actions"
+msgstr ""
+
+#: includes/class-dsubscribers-list-table.php:140
+msgid "Edit"
+msgstr ""
+
+#: includes/class-dsubscribers-list-table.php:141
+msgid "Delete"
+msgstr ""
+
+#: includes/class-dsubscribers-settings.php:36
+#: includes/class-dsubscribers-settings.php:311
+msgid "DSubscribers Settings"
+msgstr ""
+
+#: includes/class-dsubscribers-settings.php:46
+msgid "Settings"
+msgstr ""
+
+#: includes/class-dsubscribers-settings.php:56
+msgid "Subscriber E-mail"
+msgstr ""
+
+#: includes/class-dsubscribers-settings.php:62
+msgid "Send E-mail to subscriber"
+msgstr ""
+
+#: includes/class-dsubscribers-settings.php:70
+msgid "Message"
+msgstr ""
+
+#: includes/class-dsubscribers-settings.php:71
+msgid "This box accepts HTML tags"
+msgstr ""
+
+#: includes/class-dsubscribers-settings.php:82
+msgid "Form Messages"
+msgstr ""
+
+#: includes/class-dsubscribers-settings.php:88
+msgid "Subscribed"
+msgstr ""
+
+#: includes/class-dsubscribers-settings.php:92
+msgid "Subscribed message"
+msgstr ""
+
+#: includes/class-dsubscribers-settings.php:97
+msgid "Exists"
+msgstr ""
+
+#: includes/class-dsubscribers-settings.php:101
+msgid "Email already exists"
+msgstr ""
+
+#: includes/class-dsubscribers-settings.php:106
+msgid "Unsubscribed"
+msgstr ""
+
+#: includes/class-dsubscribers-settings.php:110
+msgid "Unsubscribed correctly"
+msgstr ""
+
+#: includes/class-dsubscribers-settings.php:115
+#: includes/class-dsubscribers-settings.php:119
+msgid "Subscriber don't exists"
+msgstr ""
+
+#: includes/class-dsubscribers-settings.php:266
+msgid "Upload an image"
+msgstr ""
+
+#: includes/class-dsubscribers-settings.php:266
+msgid "Use image"
+msgstr ""
+
+#: includes/class-dsubscribers-settings.php:266
+msgid "Upload new image"
+msgstr ""
+
+#: includes/class-dsubscribers-settings.php:267
+msgid "Remove image"
+msgstr ""
+
+#: includes/class-dsubscribers-settings.php:321
+msgid "Save Settings"
+msgstr ""
+
+#: includes/class-dsubscribers-table.php:51
+msgid "Email"
+msgstr ""
+
+#: includes/class-dsubscribers-widget.php:47
+msgid "Subscribe"
+msgstr ""

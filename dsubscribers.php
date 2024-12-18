@@ -1,13 +1,16 @@
 <?php
 /*
  * Plugin Name: DSubscribers
- * Version: 1.2.1
- * Plugin URI: http://wp.dinamiko.com/demos/dsubscribers
+ * Version: 1.2.2
  * Description: Manage subscribers from your site with ease
  * Author: Emili Castells
- * Author URI: http://www.dinamiko.com
+ * Author URI: https://dinamiko.dev
  * Requires at least: 3.9
- * Tested up to: 4.8
+ * Tested up to: 6.7
+ * Text Domain: dsubscribers
+ * Domain Path: /languages
+ * License: GPLv2 or later
+ * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
 
 if ( ! defined( 'ABSPATH' ) ) exit;
