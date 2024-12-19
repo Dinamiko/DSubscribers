@@ -1,0 +1,18 @@
+{
+  "name": "dsubscribers",
+  "version": "1.0.0",
+  "description": "=== DSubscribers ===\r Contributors: dinamiko\r Tags: email subscribers, subscribers, subscription, subscribe, subscribe widget\r Requires at least: 3.9\r Tested up to: 6.7\r Stable tag: 1.2.2\r License: GPLv2 or later\r License URI: http://www.gnu.org/licenses/gpl-2.0.html",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "wp-env": "wp-env"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@wordpress/env": "^10.14.0"
+  }
+}
