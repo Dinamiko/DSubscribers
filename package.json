@@ -7,12 +7,17 @@
     "test": "tests"
   },
   "scripts": {
-    "wp-env": "wp-env"
+    "wp-env": "wp-env",
+    "test:playwright": "wp-scripts test-playwright",
+    "test:playwright:help": "wp-scripts test-playwright --help",
+    "test:playwright:debug": "wp-scripts test-playwright --debug",
+    "test:playwright:headed": "wp-scripts test-playwright --headed"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@wordpress/env": "^10.14.0"
+    "@wordpress/env": "^10.14.0",
+    "@wordpress/scripts": "^30.7.0"
   }
 }

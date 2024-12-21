@@ -1,4 +1,8 @@
 {
-  "plugins": ["."],
+  "plugins": [
+    ".",
+    "https://downloads.wordpress.org/plugin/classic-editor.1.6.7.zip",
+    "https://downloads.wordpress.org/plugin/classic-widgets.0.3.zip"
+  ],
   "phpVersion": "7.2"
 }
