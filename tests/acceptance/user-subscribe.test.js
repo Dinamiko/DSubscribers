@@ -8,13 +8,15 @@ const loginAdmin = async (page) => {
     await page.getByRole('link', {name: 'DSubscribers', exact: true}).click();
 }
 
-test('user subscribe', async ({page}) => {
+const subscribe = async (page, name) => {
     await page.goto('/')
-
-    const name = crypto.randomUUID()
-
     await page.locator('#form-validation').getByPlaceholder('E-mail').fill(`${name}@example.com`);
     await page.locator('#form-validation').getByRole('button', {name: 'SUBMIT'}).click();
+}
+
+test('user subscribe', async ({page}) => {
+    const name = crypto.randomUUID()
+    await subscribe(page, name);
 
     await loginAdmin(page);
 
@@ -22,10 +24,8 @@ test('user subscribe', async ({page}) => {
 })
 
 test('user unsubscribe', async ({page}) => {
-    await page.goto('/')
     const name = crypto.randomUUID()
-    await page.locator('#form-validation').getByPlaceholder('E-mail').fill(`${name}@example.com`);
-    await page.locator('#form-validation').getByRole('button', {name: 'SUBMIT'}).click();
+    await subscribe(page, name);
 
     await page.locator('#form-validation-unsubscribe').getByPlaceholder('E-mail').fill(`${name}@example.com`);
     await page.locator('#form-validation-unsubscribe').getByRole('button', {name: 'SUBMIT'}).click();
