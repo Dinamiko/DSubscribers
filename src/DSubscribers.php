@@ -1,4 +1,5 @@
 <?php
+namespace Dinamiko\Dsubscribers;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
@@ -139,9 +140,8 @@ class DSubscribers {
 
 	public function register_dsubscribers_widget() {
 
-		require_once( 'class-dsubscribers-widget.php' );
-
-	    register_widget( 'Dsubscribers_Widget' );
+        $widget = new Widget();
+	    register_widget( $widget );
 
 	}
 

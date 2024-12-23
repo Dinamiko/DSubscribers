@@ -1,8 +1,9 @@
 <?php
+namespace Dinamiko\Dsubscribers;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-class DSubscribers_Settings {
+class Settings {
 
 	private static $_instance = null;
 

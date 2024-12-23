@@ -1,0 +1,9 @@
+{
+    "name": "dinamiko/dsubscribers",
+    "autoload": {
+        "psr-4": {
+            "Dinamiko\\Dsubscribers\\": "src/"
+        }
+    },
+    "require": {}
+}

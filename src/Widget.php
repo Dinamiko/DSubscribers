@@ -1,8 +1,9 @@
 <?php
+namespace Dinamiko\Dsubscribers;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-class Dsubscribers_Widget extends WP_Widget {
+class Widget extends \WP_Widget {
 
 	public function __construct() {
 
@@ -16,7 +17,7 @@ class Dsubscribers_Widget extends WP_Widget {
 		add_action('wp_head', array( $this, 'dsubscribers_ajaxurl' ) );
 		add_action('wp_ajax_dsubscribers_ajax', array( $this, 'dsubscribers_ajax' ) );
 		add_action('wp_ajax_nopriv_dsubscribers_ajax', array( $this, 'dsubscribers_ajax' ) );
-		*/	
+		*/
 
 	}
 
@@ -49,11 +50,11 @@ class Dsubscribers_Widget extends WP_Widget {
 		} ?>
 
 		<p>
-			<label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Title:' ); ?></label> 
+			<label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Title:' ); ?></label>
 			<input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>">
 		</p>
 
-		<?php 
+		<?php
 	}
 
 
@@ -64,6 +65,6 @@ class Dsubscribers_Widget extends WP_Widget {
 
 		return $instance;
 
-	}		
+	}
 
 }

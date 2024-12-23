@@ -13,26 +13,19 @@
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+namespace Dinamiko\Dsubscribers;
+
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-require_once( 'includes/class-dsubscribers.php' );
-require_once( 'includes/class-dsubscribers-settings.php' );
-require_once( 'includes/class-dsubscribers-table.php' );
-
-function DSubscribers () {
-
-	$instance = DSubscribers::instance( __FILE__, '1.2.1' );
-
-	if( is_null( $instance->settings ) ) {
-
-		$instance->settings = DSubscribers_Settings::instance( $instance );
-
+function init() {
+	if(is_readable(__DIR__ . '/vendor/autoload.php')) {
+		include_once __DIR__ . '/vendor/autoload.php';
 	}
 
-	$instance->table = DSubscribers_Table::instance( $instance );
-
-	return $instance;
-
+	$instance = DSubscribers::instance( __FILE__, '1.2.1' );
+	Settings::instance( $instance );
+	Table::instance( $instance );
 }
 
-DSubscribers();
+add_action('plugins_loaded', __NAMESPACE__ . '\\init');
+

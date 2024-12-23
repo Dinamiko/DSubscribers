@@ -1,8 +1,9 @@
 <?php
+namespace Dinamiko\Dsubscribers;
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-class DSubscribers_Table {
+class Table {
 
   private static $_instance = null;
   public $parent = null;
@@ -60,9 +61,9 @@ class DSubscribers_Table {
 
       <?php } ?>
 
-      <?php require_once( 'class-dsubscribers-list-table.php' );
+      <?php
 
-      $wp_list_table = new DSubscribers_List_Table();
+      $wp_list_table = new ListTable();
 
       if( isset( $_POST['s'] ) ){
 

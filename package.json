@@ -11,7 +11,8 @@
     "test:playwright": "wp-scripts test-playwright",
     "test:playwright:help": "wp-scripts test-playwright --help",
     "test:playwright:debug": "wp-scripts test-playwright --debug",
-    "test:playwright:headed": "wp-scripts test-playwright --headed"
+    "test:playwright:headed": "wp-scripts test-playwright --headed",
+    "composer": "wp-env run cli --env-cwd=wp-content/plugins/DSubscribers composer"
   },
   "keywords": [],
   "author": "",
