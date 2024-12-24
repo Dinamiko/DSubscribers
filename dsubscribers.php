@@ -15,10 +15,12 @@
 
 namespace Dinamiko\Dsubscribers;
 
-if ( ! defined( 'ABSPATH' ) ) exit;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 function init() {
-	if(is_readable(__DIR__ . '/vendor/autoload.php')) {
+	if ( is_readable( __DIR__ . '/vendor/autoload.php' ) ) {
 		include_once __DIR__ . '/vendor/autoload.php';
 	}
 
@@ -27,5 +29,4 @@ function init() {
 	Table::instance( $instance );
 }
 
-add_action('plugins_loaded', __NAMESPACE__ . '\\init');
-
+add_action( 'plugins_loaded', __NAMESPACE__ . '\\init' );
