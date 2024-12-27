@@ -1,193 +1,191 @@
 <?php
 namespace Dinamiko\Dsubscribers;
 
-if ( ! defined( 'ABSPATH' ) ) exit;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 class Table {
 
-  private static $_instance = null;
-  public $parent = null;
+	private static $_instance = null;
+	public $parent            = null;
 
-  public function __construct ( $parent ) {
+	public function __construct( $parent ) {
 
-      $this->parent = $parent;
+		$this->parent = $parent;
 
-      add_action( 'admin_menu', array( $this, 'register_dsubscribers_menu_page' ) );
+		add_action( 'admin_menu', array( $this, 'register_dsubscribers_menu_page' ) );
 
-      add_action('init', array( $this, 'dsubscribers_update' ) );
-      add_action('init', array( $this, 'dsubscribers_delete' ) );
+		add_action( 'init', array( $this, 'dsubscribers_update' ) );
+		add_action( 'init', array( $this, 'dsubscribers_delete' ) );
 
-      add_action('init', array( $this, 'dsubscribers_export' ) );
+		add_action( 'init', array( $this, 'dsubscribers_export' ) );
+	}
 
-  }
+	public function register_dsubscribers_menu_page() {
 
-  public function register_dsubscribers_menu_page (){
+		add_menu_page( 'DSubscribers', 'DSubscribers', 'manage_options', 'dsubscribers', array( $this, 'dsubscribers_menu_page' ), 'dashicons-groups' );
+	}
 
-      add_menu_page( 'DSubscribers', 'DSubscribers', 'manage_options', 'dsubscribers', array( $this, 'dsubscribers_menu_page' ), 'dashicons-groups' );
+	public function dsubscribers_menu_page() {
+		?>
+		<div class="wrap">
 
-  }
+		<h2 style="position:relative;width:100%;float:left;margin-bottom:15px;">DSubscribers
 
-  public function dsubscribers_menu_page () { ?>
-      <div class="wrap">
+			<a style="position:absolute;top:10px;right:15px;" class="button-primary" href="admin.php?page=dsubscribers&action=export">Export (.csv)</a>
 
-        <h2 style="position:relative;width:100%;float:left;margin-bottom:15px;">DSubscribers
+		</h2>
 
-          <a style="position:absolute;top:10px;right:15px;" class="button-primary" href="admin.php?page=dsubscribers&action=export">Export (.csv)</a>
 
-        </h2>
+		<?php
+		if ( isset( $_GET['dsubscribers'] ) && $_GET['action'] == 'edit' ) {
 
+			$id = intval( $_GET['dsubscribers'] );
 
-      <?php if( isset($_GET['dsubscribers']) && $_GET['action'] == 'edit' ) {
+			global $wpdb;
+			$table_name = $wpdb->prefix . 'dsubscribers';
 
-          $id = intval( $_GET['dsubscribers'] );
+			$row = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $table_name WHERE id=%d", $id ) );
+			?>
 
-          global $wpdb;
-          $table_name = $wpdb->prefix . "dsubscribers";
+			<form id="dsubscribers-form" method="post">
 
-          $row = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $table_name WHERE id=%d", $id ) );
-          ?>
+			<label><?php _e( 'Email', 'dsubscribers' ); ?>:</label>
+			<input type="text" name="email" id="email" value="<?php echo esc_attr( $row->email ); ?>" />
 
-          <form id="dsubscribers-form" method="post">
+			<div style="float:left; width:100%;margin-top:20px;">
+				<input type="hidden" name="dsubscribers_id" value="<?php echo esc_attr( $row->id ); ?>" />
+				<input type="submit" class="button-primary" value="Save"></input>
+			</div>
 
-            <label><?php _e( 'Email' , 'dsubscribers' );?>:</label>
-            <input type="text" name="email" id="email" value="<?php echo esc_attr( $row->email ); ?>" />
+			</form>
 
-            <div style="float:left; width:100%;margin-top:20px;">
-              <input type="hidden" name="dsubscribers_id" value="<?php echo esc_attr( $row->id ); ?>" />
-              <input type="submit" class="button-primary" value="Save"></input>
-            </div>
+		<?php } ?>
 
-          </form>
+		<?php
 
-      <?php } ?>
+		$wp_list_table = new ListTable();
 
-      <?php
+		if ( isset( $_POST['s'] ) ) {
 
-      $wp_list_table = new ListTable();
+			$wp_list_table->prepare_items( $_POST['s'] );
 
-      if( isset( $_POST['s'] ) ){
+		} else {
 
-          $wp_list_table->prepare_items( $_POST['s'] );
+			$wp_list_table->prepare_items();
 
-      } else {
+		}
 
-          $wp_list_table->prepare_items();
+		?>
 
-      }
 
-      ?>
 
+		<form method="post">
 
+			<input type="hidden" name="page" value="<?php echo $_REQUEST['page']; ?>" />
 
-      <form method="post">
+			<?php $wp_list_table->search_box( 'Search', 'dsubscribers-id' ); ?>
 
-          <input type="hidden" name="page" value="<?php echo $_REQUEST['page'] ?>" />
+		</form>
 
-          <?php $wp_list_table->search_box('Search', 'dsubscribers-id'); ?>
 
-      </form>
 
+		<?php $wp_list_table->display(); ?>
 
+		</div>
 
-      <?php $wp_list_table->display(); ?>
+		<?php
+	}
 
-      </div>
+	public function dsubscribers_update() {
 
-  <?php }
+		if ( isset( $_POST['dsubscribers_id'] ) ) {
 
-  public function dsubscribers_update () {
+			$id    = intval( $_POST['dsubscribers_id'] );
+			$email = sanitize_email( $_POST['email'] );
 
-    if( isset( $_POST['dsubscribers_id'] ) ) {
+			global $wpdb;
+			$table_name = $wpdb->prefix . 'dsubscribers';
 
-      $id = intval($_POST['dsubscribers_id']);
-      $email = sanitize_email($_POST['email']);
+			$wpdb->update(
+				$table_name,
+				array( 'email' => $email ),
+				array( 'ID' => $id ),
+				array( '%s' ),
+				array( '%d' )
+			);
 
-      global $wpdb;
-      $table_name = $wpdb->prefix . "dsubscribers";
+			$paged = ! empty( $_GET['paged'] ) ? sanitize_text_field( $_GET['paged'] ) : '';
+			header( "Location:admin.php?page=dsubscribers&paged=$paged" );
 
-      $wpdb->update(
-        $table_name,
-        array( 'email' => $email ),
-        array( 'ID' => $id ),
-        array( '%s' ),
-        array( '%d' )
-      );
+		}
+	}
 
-      $paged = !empty($_GET["paged"]) ? sanitize_text_field($_GET["paged"]) : '';
-      header("Location:admin.php?page=dsubscribers&paged=$paged");
+	public function dsubscribers_delete() {
 
-    }
+		if ( isset( $_GET['dsubscribers'] ) && $_GET['action'] == 'delete' ) {
 
-  }
+			global $wpdb;
+			$id         = intval( $_GET['dsubscribers'] );
+			$table_name = $wpdb->prefix . 'dsubscribers';
 
-  public function dsubscribers_delete () {
+			$wpdb->delete( $table_name, array( 'ID' => $id ), array( '%d' ) );
 
-    if( isset($_GET['dsubscribers']) && $_GET['action'] == 'delete' ) {
+			$paged = ! empty( $_GET['paged'] ) ? sanitize_text_field( $_GET['paged'] ) : '';
+			header( "Location:admin.php?page=dsubscribers&paged=$paged" );
 
-        global $wpdb;
-        $id = intval( $_GET['dsubscribers'] );
-        $table_name = $wpdb->prefix . "dsubscribers";
+		}
+	}
 
-        $wpdb->delete( $table_name, array( 'ID' => $id ), array( '%d' ) );
+	/**
+	 * Export database data to .csv file
+	 * based on: https://wordpress.org/plugins/export-users-to-csv/
+	 */
+	public function dsubscribers_export() {
 
-        $paged = !empty($_GET["paged"]) ? sanitize_text_field($_GET["paged"]) : '';
-        header("Location:admin.php?page=dsubscribers&paged=$paged");
+		if ( isset( $_GET['action'] ) && $_GET['action'] == 'export' ) {
 
-    }
+			$filename = 'dsubscribers-' . date( 'Y-m-d' ) . '.csv';
 
-  }
+			header( 'Content-Description: File Transfer' );
+			header( 'Content-Disposition: attachment; filename=' . $filename );
+			header( 'Content-Type: text/csv; charset=' . get_option( 'blog_charset' ), true );
 
-  /**
-  * Export database data to .csv file
-  * based on: https://wordpress.org/plugins/export-users-to-csv/
-  */
-  public function dsubscribers_export () {
+			echo 'email' . "\n";
 
-      if( isset($_GET['action']) && $_GET['action'] == 'export' ) {
+			global $wpdb;
+			$table_name = $wpdb->prefix . 'dsubscribers';
 
-        $filename = 'dsubscribers-' . date( 'Y-m-d' ) . '.csv';
+			$emails = $wpdb->get_results( "SELECT * FROM $table_name" );
 
-        header( 'Content-Description: File Transfer' );
-        header( 'Content-Disposition: attachment; filename=' . $filename );
-        header( 'Content-Type: text/csv; charset=' . get_option( 'blog_charset' ), true );
+			foreach ( $emails as $email ) {
 
-        echo "email" . "\n";
+				echo $email->email . "\n";
 
-        global $wpdb;
-        $table_name = $wpdb->prefix . "dsubscribers";
+			}
 
-        $emails = $wpdb->get_results( "SELECT * FROM $table_name" );
+			exit;
 
-        foreach ( $emails as $email ) {
+		}
+	}
 
-          echo $email->email . "\n";
+	public static function instance( $parent ) {
 
-        }
+		if ( is_null( self::$_instance ) ) {
 
-        exit;
+			self::$_instance = new self( $parent );
 
-      }
+		}
 
-  }
+		return self::$_instance;
+	}
 
-  public static function instance ( $parent ) {
+	public function __clone() {
+		_doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; huh?' ), $this->parent->_version );
+	}
 
-    if ( is_null( self::$_instance ) ) {
-
-      self::$_instance = new self( $parent );
-
-    }
-
-    return self::$_instance;
-
-  }
-
-  public function __clone () {
-    _doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; huh?' ), $this->parent->_version );
-  }
-
-  public function __wakeup () {
-    _doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; huh?' ), $this->parent->_version );
-  }
-
+	public function __wakeup() {
+		_doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; huh?' ), $this->parent->_version );
+	}
 }

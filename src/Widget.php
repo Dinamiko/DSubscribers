@@ -1,24 +1,17 @@
 <?php
 namespace Dinamiko\Dsubscribers;
 
-if ( ! defined( 'ABSPATH' ) ) exit;
+use WP_Widget;
 
-class Widget extends \WP_Widget {
+class Widget extends WP_Widget {
 
 	public function __construct() {
 
 		parent::__construct(
 			'dsubscribers_widget',
-			__('DSubscribers', 'dsubscribers'),
-			array( 'description' => __( 'DSubscribers', 'dsubscribers' ), )
+			__( 'DSubscribers', 'dsubscribers' ),
+			array( 'description' => __( 'DSubscribers', 'dsubscribers' ) )
 		);
-
-		/*
-		add_action('wp_head', array( $this, 'dsubscribers_ajaxurl' ) );
-		add_action('wp_ajax_dsubscribers_ajax', array( $this, 'dsubscribers_ajax' ) );
-		add_action('wp_ajax_nopriv_dsubscribers_ajax', array( $this, 'dsubscribers_ajax' ) );
-		*/
-
 	}
 
 	public function widget( $args, $instance ) {
@@ -31,17 +24,16 @@ class Widget extends \WP_Widget {
 			echo $args['before_title'] . $title . $args['after_title'];
 		}
 
-		echo do_shortcode('[dsubscribers type="widget"]');
+		echo do_shortcode( '[dsubscribers type="widget"]' );
 
 		echo $args['after_widget'];
-
 	}
 
 	public function form( $instance ) {
 
-		if ( isset( $instance[ 'title' ] ) ) {
+		if ( isset( $instance['title'] ) ) {
 
-			$title = $instance[ 'title' ];
+			$title = $instance['title'];
 
 		} else {
 
@@ -60,11 +52,9 @@ class Widget extends \WP_Widget {
 
 	public function update( $new_instance, $old_instance ) {
 
-		$instance = array();
+		$instance          = array();
 		$instance['title'] = ( ! empty( $new_instance['title'] ) ) ? strip_tags( $new_instance['title'] ) : '';
 
 		return $instance;
-
 	}
-
 }

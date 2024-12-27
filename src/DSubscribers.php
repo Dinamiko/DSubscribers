@@ -1,10 +1,6 @@
 <?php
 namespace Dinamiko\Dsubscribers;
 
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
-
 class DSubscribers {
 
 	private static $_instance = null;
@@ -41,17 +37,12 @@ class DSubscribers {
 		// custom wp table
 		register_activation_hook( $this->file, array( $this, 'dsubscribers_database_install' ) );
 
-		// TODO
-		// add_action( 'plugins_loaded', array( $this, 'dsubscribers_update_db_check' ), 10, 1 );
-
 		add_action( 'wp_head', array( $this, 'dsubscribers_ajaxurl' ) );
 
 		add_shortcode( 'dsubscribers', array( $this, 'dsubscribers_shortcode' ) );
 
 		add_action( 'wp_ajax_dsubscribers_ajax', array( $this, 'dsubscribers_ajax' ) );
 		add_action( 'wp_ajax_nopriv_dsubscribers_ajax', array( $this, 'dsubscribers_ajax' ) );
-
-		// add_filter('wp_mail_content_type', create_function('', 'return "text/html";'));
 
 		add_action( 'widgets_init', array( $this, 'register_dsubscribers_widget' ) );
 
@@ -190,21 +181,6 @@ class DSubscribers {
 		add_option( 'jal_db_version', $jal_db_version );
 	}
 
-	/*
-	TODO
-	public function dsubscribers_update_db_check() {
-
-		global $jal_db_version;
-
-		if (get_site_option( 'jal_db_version' ) != $jal_db_version) {
-
-			jal_install();
-
-		}
-
-	}
-	*/
-
 	public function dsubscribers_ajaxurl() {
 		?>
 
@@ -219,17 +195,13 @@ class DSubscribers {
 
 	public function dsubscribers_ajax() {
 
-		// $nonce = $_REQUEST['dsubscribers_nonce'];
-
 		if ( ! isset( $_POST['dsubscribers_nonce'] ) || ! wp_verify_nonce( $_POST['dsubscribers_nonce'], 'dsubscribers_form_action' ) ) {
-			// if ( ! wp_verify_nonce( $nonce, 'dsubscribers_nonce' ) ) {
 
 			die( 'Security check' );
 
 		} else {
 
 			$dsubscribers_action = sanitize_text_field( $_POST['dsubscribers_action'] );
-			// $dsubscribers_email = wp_kses($_POST['dsubscribers_email']);
 			$dsubscribers_email = sanitize_email( $_POST['dsubscribers_email'] );
 
 			switch ( $dsubscribers_action ) {
@@ -355,11 +327,6 @@ class DSubscribers {
 			),
 			$atts
 		);
-
-		/*
-		$nonce = wp_create_nonce("dsubscribers_nonce");
-		$link = admin_url('admin-ajax.php?action=dsubscribers_ajax');
-		*/
 
 		$content = '<div id="dsubscribers-container">';
 
