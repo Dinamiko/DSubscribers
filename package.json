@@ -12,12 +12,15 @@
     "test:playwright:help": "wp-scripts test-playwright --help",
     "test:playwright:debug": "wp-scripts test-playwright --debug",
     "test:playwright:headed": "wp-scripts test-playwright --headed",
-    "composer": "wp-env run cli --env-cwd=wp-content/plugins/DSubscribers composer"
+    "composer": "wp-env run cli --env-cwd=wp-content/plugins/DSubscribers composer",
+    "build": "wp-scripts build --webpack-src-dir=assets",
+    "start": "wp-scripts start --webpack-src-dir=assets"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@wordpress/env": "^10.14.0"
+    "@wordpress/env": "^10.14.0",
+    "@wordpress/scripts": "^30.7.0"
   }
 }

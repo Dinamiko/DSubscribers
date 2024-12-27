@@ -28,9 +28,6 @@ class DSubscribers {
 
 		register_activation_hook( $this->file, array( $this, 'install' ) );
 
-		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_styles' ), 10 );
-		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ), 10 );
-
 		$this->load_plugin_textdomain();
 		add_action( 'init', array( $this, 'load_localisation' ), 0 );
 
@@ -202,7 +199,7 @@ class DSubscribers {
 		} else {
 
 			$dsubscribers_action = sanitize_text_field( $_POST['dsubscribers_action'] );
-			$dsubscribers_email = sanitize_email( $_POST['dsubscribers_email'] );
+			$dsubscribers_email  = sanitize_email( $_POST['dsubscribers_email'] );
 
 			switch ( $dsubscribers_action ) {
 

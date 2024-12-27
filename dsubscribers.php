@@ -24,6 +24,31 @@ function init() {
 		include_once __DIR__ . '/vendor/autoload.php';
 	}
 
+	add_action(
+		'wp_enqueue_scripts',
+		function () {
+			$scripts_handle = require __DIR__ . '/build/frontend.asset.php';
+
+			wp_register_script(
+				'dsubscribers-frontend-js',
+				plugins_url( '/build/frontend.js', __FILE__ ),
+				$scripts_handle['dependencies'],
+				$scripts_handle['version']
+			);
+			wp_enqueue_script( 'dsubscribers-frontend-js' );
+
+			$scripts_handle_css = require __DIR__ . '/build/frontend-css.asset.php';
+
+			wp_register_style(
+				'dsubscribers-frontend-css',
+				plugins_url( '/build/frontend-css.css', __FILE__ ),
+				$scripts_handle_css['dependencies'],
+				$scripts_handle_css['version']
+			);
+			wp_enqueue_style( 'dsubscribers-frontend-css' );
+		}
+	);
+
 	$instance = DSubscribers::instance( __FILE__, '1.2.1' );
 	Settings::instance( $instance );
 	Table::instance( $instance );
