@@ -29,6 +29,8 @@ function init() {
 		function () {
 			$scripts_handle = require __DIR__ . '/build/frontend.asset.php';
 
+			$scripts_handle['dependencies'][] = 'jquery';
+
 			wp_register_script(
 				'dsubscribers-frontend-js',
 				plugins_url( '/build/frontend.js', __FILE__ ),
@@ -36,6 +38,14 @@ function init() {
 				$scripts_handle['version']
 			);
 			wp_enqueue_script( 'dsubscribers-frontend-js' );
+
+			wp_localize_script(
+				'dsubscribers-frontend-js',
+				'dsubscribers_data',
+				[
+					'ajax_url' => esc_url( admin_url( 'admin-ajax.php' ) ),
+				]
+			);
 
 			$scripts_handle_css = require __DIR__ . '/build/frontend-css.asset.php';
 
