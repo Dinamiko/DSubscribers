@@ -333,10 +333,8 @@ class DSubscribers {
 
 			$content .= '<p id="dsubscribers_msg_widget"></p>';
 
-			// $content .= '<form id="form-validation-widget" class="form-container" method="post" action="'. $link .'">';
 			$content .= '<form id="form-validation-widget" class="form-container" data-action="">';
 
-				// TODO escape
 				$content .= '<input id="dsubscribers_email" type="email" name="email" placeholder="E-mail" required>';
 
 				$content .= '<input type="submit" value="SUBMIT">';
@@ -367,13 +365,11 @@ class DSubscribers {
 
 			} else {
 
-				$content .= '<p id="dsubscribers_msg"></p>';
+				//$content .= '<p id="dsubscribers_msg"></p>';
 				$content .= '<form id="form-validation" class="form-container">';
 
 			}
 
-			// $content .= '<form id="form-validation" class="form-container" method="post" action="'. $link .'">';
-			// $content .= '<form id="form-validation" class="form-container">';
 				$content .= '<input id="dsubscribers_email" type="email" name="email" placeholder="E-mail" required>';
 
 				$content .= '<input type="submit" value="SUBMIT">';
@@ -390,7 +386,6 @@ class DSubscribers {
 
 			}
 
-				// $content .= '<input type="hidden" id="dsubscribers_nonce" name="dsubscribers_nonce" value="'. $nonce .'" />';
 				$content .= wp_nonce_field( 'dsubscribers_form_action', 'dsubscribers_form_nonce' );
 
 				$content .= '</form>';
