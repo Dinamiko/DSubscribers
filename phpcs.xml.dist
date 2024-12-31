@@ -3,5 +3,7 @@
     <rule ref="WordPress">
         <exclude name="WordPress.Files.FileName.NotHyphenatedLowercase" />
         <exclude name="WordPress.Files.FileName.InvalidClassFileName" />
+        <exclude name="Squiz.Commenting.FileComment.Missing" />
+        <exclude name="Squiz.Commenting.ClassComment.Missing" />
     </rule>
 </ruleset>

@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }).then((response) => {
                 return response.json();
             }).then((data) => {
-                document.getElementById(msgId).innerHTML = data.msg;
+                document.getElementById(msgId).innerHTML = data.data.msg;
                 document.querySelector(`#${formId} input#dsubscribers_email`).value = '';
             });
         });

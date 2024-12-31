@@ -1,40 +1,53 @@
 <?php
+declare( strict_types = 1 );
+
 namespace Dinamiko\Dsubscribers;
 
 class DSubscribers {
+	/**
+	 * Plugin instance.
+	 *
+	 * @var null
+	 */
+	private static $instance = null;
 
-	private static $_instance = null;
-
-	public $settings = null;
-	public $_version;
-	public $_token;
+	/**
+	 * Pluguin file.
+	 *
+	 * @var string
+	 */
 	public $file;
-	public $dir;
-	public $assets_dir;
-	public $assets_url;
-	public $script_suffix;
 
+	/**
+	 * Plugin version.
+	 *
+	 * @var string
+	 */
+	private $version;
+
+	/**
+	 * Plugin name.
+	 *
+	 * @var string
+	 */
+	private $token;
+
+	/**
+	 * DSubscriber constructor.
+	 *
+	 * @param string $file Plugin file.
+	 * @param string $version Plugin version.
+	 */
 	public function __construct( $file = '', $version = '1.0' ) {
-
-		$this->_version = $version;
-		$this->_token   = 'dsubscribers';
-
-		$this->file       = $file;
-		$this->dir        = dirname( $this->file );
-		$this->assets_dir = trailingslashit( $this->dir ) . 'assets';
-		$this->assets_url = esc_url( trailingslashit( plugins_url( '/assets/', $this->file ) ) );
-
-		$this->script_suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+		$this->file    = $file;
+		$this->version = $version;
+		$this->token   = 'dsubscribers';
 
 		register_activation_hook( $this->file, array( $this, 'install' ) );
+		register_activation_hook( $this->file, array( $this, 'dsubscribers_database_install' ) );
 
 		$this->load_plugin_textdomain();
 		add_action( 'init', array( $this, 'load_localisation' ), 0 );
-
-		// custom wp table
-		register_activation_hook( $this->file, array( $this, 'dsubscribers_database_install' ) );
-
-		add_action( 'wp_head', array( $this, 'dsubscribers_ajaxurl' ) );
 
 		add_shortcode( 'dsubscribers', array( $this, 'dsubscribers_shortcode' ) );
 
@@ -42,114 +55,33 @@ class DSubscribers {
 		add_action( 'wp_ajax_nopriv_dsubscribers_ajax', array( $this, 'dsubscribers_ajax' ) );
 
 		add_action( 'widgets_init', array( $this, 'register_dsubscribers_widget' ) );
-
-		// sanitizes dsubscribers options
-		add_action( 'init', array( $this, 'dsubscribers_sanitize_options' ) );
 	}
 
 	/**
-	 * adds filter pre_update_option_{option}
+	 * Registers the widget.
+	 *
+	 * @return void
 	 */
-	public function dsubscribers_sanitize_options() {
-
-		add_filter( 'pre_update_option_dsubscribers_send_checkbox', array( $this, 'dsubscribers_update_field_dsubscribers_send_checkbox' ), 10, 2 );
-		add_filter( 'pre_update_option_dsubscribers_message_block', array( $this, 'dsubscribers_update_field_dsubscribers_message_block' ), 10, 2 );
-		add_filter( 'pre_update_option_dsubscribers_subscribed_msg', array( $this, 'dsubscribers_update_field_dsubscribers_subscribed_msg' ), 10, 2 );
-		add_filter( 'pre_update_option_dsubscribers_exists_msg', array( $this, 'dsubscribers_update_field_dsubscribers_exists_msg' ), 10, 2 );
-		add_filter( 'pre_update_option_dsubscribers_unsubscribed_msg', array( $this, 'dsubscribers_update_field_dsubscribers_unsubscribed_msg' ), 10, 2 );
-		add_filter( 'pre_update_option_dsubscribers_dont_exists_msg', array( $this, 'dsubscribers_update_field_dsubscribers_dont_exists_msg' ), 10, 2 );
-	}
-
-	/**
-	 * sanitizes dsubscribers_send_checkbox option
-	 */
-	public function dsubscribers_update_field_dsubscribers_send_checkbox( $new_value, $old_value ) {
-		$new_value = sanitize_text_field( $new_value );
-		return $new_value;
-	}
-
-	/**
-	 * sanitizes dsubscribers_message_block option
-	 */
-	public function dsubscribers_update_field_dsubscribers_message_block( $new_value, $old_value ) {
-
-		$arr = array(
-			'a'      => array(
-				'href'  => array(),
-				'title' => array(),
-			),
-			'br'     => array(),
-			'em'     => array(),
-			'strong' => array(),
-			'p'      => array(),
-			'h1'     => array(),
-			'h2'     => array(),
-			'h3'     => array(),
-			'h4'     => array(),
-		);
-
-		$new_value = wp_kses( $new_value, $arr );
-
-		return $new_value;
-	}
-
-	/**
-	 * sanitizes dsubscribers_subscribed_msg option
-	 */
-	public function dsubscribers_update_field_dsubscribers_subscribed_msg( $new_value, $old_value ) {
-		$new_value = sanitize_text_field( $new_value );
-		return $new_value;
-	}
-
-	/**
-	 * sanitizes dsubscribers_exists_msg option
-	 */
-	public function dsubscribers_update_field_dsubscribers_exists_msg( $new_value, $old_value ) {
-		$new_value = sanitize_text_field( $new_value );
-		return $new_value;
-	}
-
-	/**
-	 * sanitizes dsubscribers_unsubscribed_msg option
-	 */
-	public function dsubscribers_update_field_dsubscribers_unsubscribed_msg( $new_value, $old_value ) {
-		$new_value = sanitize_text_field( $new_value );
-		return $new_value;
-	}
-
-	/**
-	 * sanitizes dsubscribers_dont_exists_msg option
-	 */
-	public function dsubscribers_update_field_dsubscribers_dont_exists_msg( $new_value, $old_value ) {
-		$new_value = sanitize_text_field( $new_value );
-		return $new_value;
-	}
-
-	public function register_dsubscribers_widget() {
-
+	public function register_dsubscribers_widget(): void {
 		$widget = new Widget();
 		register_widget( $widget );
 	}
 
-	public function enqueue_styles() {
-		wp_register_style( $this->_token . '-frontend', esc_url( $this->assets_url ) . 'css/frontend.css', array(), $this->_version );
-		wp_enqueue_style( $this->_token . '-frontend' );
-	}
-
-	public function enqueue_scripts() {
-
-		wp_register_script( $this->_token . '-validate', esc_url( $this->assets_url ) . 'js/jquery.validate.min.js', array( 'jquery' ), $this->_version, true );
-		wp_enqueue_script( $this->_token . '-validate' );
-
-		wp_register_script( $this->_token . '-frontend', esc_url( $this->assets_url ) . 'js/frontend.js', array( 'jquery' ), $this->_version, true );
-		wp_enqueue_script( $this->_token . '-frontend' );
-	}
-
-	public function load_localisation() {
+	/**
+	 * Load localization.
+	 *
+	 * @return void
+	 */
+	public function load_localisation(): void {
 		load_plugin_textdomain( 'dsubscribers', false, dirname( plugin_basename( $this->file ) ) . '/lang/' );
 	}
 
-	public function load_plugin_textdomain() {
+	/**
+	 * Load plugin text domain.
+	 *
+	 * @return void
+	 */
+	public function load_plugin_textdomain(): void {
 
 		$domain = 'dsubscribers';
 		$locale = apply_filters( 'plugin_locale', get_locale(), $domain );
@@ -158,7 +90,12 @@ class DSubscribers {
 		load_plugin_textdomain( $domain, false, dirname( plugin_basename( $this->file ) ) . '/lang/' );
 	}
 
-	public function dsubscribers_database_install() {
+	/**
+	 * Install the database.
+	 *
+	 * @return void
+	 */
+	public function dsubscribers_database_install(): void {
 
 		global $wpdb;
 		global $jal_db_version;
@@ -178,28 +115,22 @@ class DSubscribers {
 		add_option( 'jal_db_version', $jal_db_version );
 	}
 
-	public function dsubscribers_ajaxurl() {
-		?>
-
-		<script type="text/javascript">
-
-			var ajaxurl = '<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>';
-
-		</script>
-
-		<?php
-	}
-
+	/**
+	 * Handles the subscribe ajax request.
+	 *
+	 * @return void
+	 */
 	public function dsubscribers_ajax() {
 
-		if ( ! isset( $_POST['dsubscribers_nonce'] ) || ! wp_verify_nonce( $_POST['dsubscribers_nonce'], 'dsubscribers_form_action' ) ) {
+		$dsubscribers_nonce = sanitize_text_field( wp_unslash( $_POST['dsubscribers_nonce'] ?? null ) );
+		if ( ! isset( $dsubscribers_nonce ) || ! wp_verify_nonce( $dsubscribers_nonce, 'dsubscribers_form_action' ) ) {
 
-			die( 'Security check' );
+			wp_send_json_error( 'Security check' );
 
 		} else {
 
-			$dsubscribers_action = sanitize_text_field( $_POST['dsubscribers_action'] );
-			$dsubscribers_email  = sanitize_email( $_POST['dsubscribers_email'] );
+			$dsubscribers_action = sanitize_text_field( wp_unslash( $_POST['dsubscribers_action'] ?? '' ) );
+			$dsubscribers_email  = sanitize_email( wp_unslash( $_POST['dsubscribers_email'] ?? '' ) );
 
 			switch ( $dsubscribers_action ) {
 
@@ -207,36 +138,30 @@ class DSubscribers {
 					global $wpdb;
 					$table_name = $wpdb->prefix . 'dsubscribers';
 
-					// get id from email
-					$row = $wpdb->get_row( "SELECT * FROM $table_name WHERE email='$dsubscribers_email'" );
+                    // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+					$row = $wpdb->get_row(
+						$wpdb->prepare(
+							// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+							"SELECT * FROM $table_name WHERE email=%s",
+							$dsubscribers_email
+						)
+					);
 
 					if ( $row ) {
-
 						$id = $row->id;
 
-						$wpdb->delete( 'wp_dsubscribers', array( 'ID' => $id ) );
-
-						$msg = 'unsubscribed';
+						// phpcs:ignore WordPress.DB.DirectDatabaseQuery
+						$wpdb->delete( $wpdb->prefix . 'dsubscribers', array( 'ID' => $id ) );
 
 						$result['type'] = 'success';
 						$result['msg']  = '<span class="dsubscribers_success">' . get_option( 'dsubscribers_unsubscribed_msg', 'Unsubscribed correctly' ) . '</span>';
 
-						$result = json_encode( $result );
-						echo $result;
-
-						die();
-
 					} else {
-
 						$result['type'] = 'error';
 						$result['msg']  = '<span class="dsubscribers_error">' . get_option( 'dsubscribers_dont_exists_msg', 'Sorry, subscriber doesn\'t exists' ) . '</span>';
-
-						$result = json_encode( $result );
-						echo $result;
-
-						die();
-
 					}
+
+					wp_send_json_success( $result );
 
 				default:
 					global $wpdb;
@@ -244,19 +169,15 @@ class DSubscribers {
 
 					$emails = $wpdb->get_results( "SELECT * FROM $table_name" );
 
-					// if email exists -> redirect and show message exists
-
 					foreach ( $emails as $email ) {
 
-						if ( $email->email == $dsubscribers_email ) {
+						// if email exists -> redirect and show message exists
+						if ( $email->email === $dsubscribers_email ) {
 
 							$result['type'] = 'error';
 							$result['msg']  = '<span class="dsubscribers_error">' . get_option( 'dsubscribers_exists_msg', 'Sorry, this e-mail already exists' ) . '</span>';
 
-							$result = json_encode( $result );
-							echo $result;
-
-							die();
+							wp_send_json_success( $result );
 
 						}
 					}
@@ -278,8 +199,6 @@ class DSubscribers {
 
 					if ( $inserted ) {
 
-						$insert_id = $wpdb->insert_id;
-
 						// if option send email checked in settings
 
 						if ( get_option( 'dsubscribers_send_checkbox' ) == 'on' ) {
@@ -297,15 +216,10 @@ class DSubscribers {
 						$result['type'] = 'success';
 						$result['msg']  = '<span class="dsubscribers_success">' . get_option( 'dsubscribers_subscribed_msg', 'Thank you for subscribing!' ) . '</span>';
 
-						$result = json_encode( $result );
-						echo $result;
-
-						die();
-
+						wp_send_json_success( $result );
 					}
 
 					break;
-
 			}
 		}
 	}
@@ -365,7 +279,7 @@ class DSubscribers {
 
 			} else {
 
-				//$content .= '<p id="dsubscribers_msg"></p>';
+				// $content .= '<p id="dsubscribers_msg"></p>';
 				$content .= '<form id="form-validation" class="form-container">';
 
 			}
@@ -404,21 +318,21 @@ class DSubscribers {
 	}
 
 	public static function instance( $file = '', $version = '1.0.0' ) {
-		if ( is_null( self::$_instance ) ) {
-			self::$_instance = new self( $file, $version );
+		if ( is_null( self::$instance ) ) {
+			self::$instance = new self( $file, $version );
 		}
-		return self::$_instance;
+		return self::$instance;
 	}
 
 	public function __clone() {
-		_doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; huh?' ), $this->_version );
+		_doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; huh?' ), $this->version );
 	}
 
 	public function __wakeup() {
-		_doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; huh?' ), $this->_version );
+		_doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; huh?' ), $this->version );
 	}
 
 	private function _log_version_number() {
-		update_option( $this->_token . '_version', $this->_version );
+		update_option( $this->token . '_version', $this->version );
 	}
 }

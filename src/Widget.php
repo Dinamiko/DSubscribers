@@ -1,4 +1,6 @@
 <?php
+declare( strict_types = 1 );
+
 namespace Dinamiko\Dsubscribers;
 
 use WP_Widget;
