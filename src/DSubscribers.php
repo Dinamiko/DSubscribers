@@ -127,100 +127,82 @@ class DSubscribers {
 
 			wp_send_json_error( 'Security check' );
 
-		} else {
+		}
 
-			$dsubscribers_action = sanitize_text_field( wp_unslash( $_POST['dsubscribers_action'] ?? '' ) );
-			$dsubscribers_email  = sanitize_email( wp_unslash( $_POST['dsubscribers_email'] ?? '' ) );
+		global $wpdb;
+		$table_name          = $wpdb->prefix . 'dsubscribers';
+		$dsubscribers_action = sanitize_text_field( wp_unslash( $_POST['dsubscribers_action'] ?? '' ) );
+		$dsubscribers_email  = sanitize_email( wp_unslash( $_POST['dsubscribers_email'] ?? '' ) );
 
-			switch ( $dsubscribers_action ) {
+		if ( $dsubscribers_action === 'unsubscribe' ) {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery
+			$row = $wpdb->get_row(
+				$wpdb->prepare(
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+					"SELECT * FROM $table_name WHERE email=%s",
+					$dsubscribers_email
+				)
+			);
 
-				case 'unsubscribe':
-					global $wpdb;
-					$table_name = $wpdb->prefix . 'dsubscribers';
+			if ( $row ) {
+				$id = $row->id;
 
-                    // phpcs:ignore WordPress.DB.DirectDatabaseQuery
-					$row = $wpdb->get_row(
-						$wpdb->prepare(
-							// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-							"SELECT * FROM $table_name WHERE email=%s",
-							$dsubscribers_email
-						)
-					);
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery
+				$wpdb->delete( $wpdb->prefix . 'dsubscribers', array( 'ID' => $id ) );
 
-					if ( $row ) {
-						$id = $row->id;
+				$result['type'] = 'success';
+				$result['msg']  = '<span class="dsubscribers_success">' . get_option( 'dsubscribers_unsubscribed_msg', 'Unsubscribed correctly' ) . '</span>';
 
-						// phpcs:ignore WordPress.DB.DirectDatabaseQuery
-						$wpdb->delete( $wpdb->prefix . 'dsubscribers', array( 'ID' => $id ) );
-
-						$result['type'] = 'success';
-						$result['msg']  = '<span class="dsubscribers_success">' . get_option( 'dsubscribers_unsubscribed_msg', 'Unsubscribed correctly' ) . '</span>';
-
-					} else {
-						$result['type'] = 'error';
-						$result['msg']  = '<span class="dsubscribers_error">' . get_option( 'dsubscribers_dont_exists_msg', 'Sorry, subscriber doesn\'t exists' ) . '</span>';
-					}
-
-					wp_send_json_success( $result );
-
-				default:
-					global $wpdb;
-					$table_name = $wpdb->prefix . 'dsubscribers';
-
-					$emails = $wpdb->get_results( "SELECT * FROM $table_name" );
-
-					foreach ( $emails as $email ) {
-
-						// if email exists -> redirect and show message exists
-						if ( $email->email === $dsubscribers_email ) {
-
-							$result['type'] = 'error';
-							$result['msg']  = '<span class="dsubscribers_error">' . get_option( 'dsubscribers_exists_msg', 'Sorry, this e-mail already exists' ) . '</span>';
-
-							wp_send_json_success( $result );
-
-						}
-					}
-
-					// if email don't exists -> insert data to wp_dsubscribers table
-					// and redirect with message created
-
-					$inserted = $wpdb->insert(
-						$table_name,
-						array(
-							'email' => $dsubscribers_email,
-							'time'  => date( 'Y-m-d h:i:s', time() ),
-						),
-						array(
-							'%s',
-							'%s',
-						)
-					);
-
-					if ( $inserted ) {
-
-						// if option send email checked in settings
-
-						if ( get_option( 'dsubscribers_send_checkbox' ) == 'on' ) {
-
-							$subject = 'The subject';
-
-							$message = get_option( 'dsubscribers_message_block' );
-
-							$headers = 'From: ' . get_bloginfo( 'name' ) . ' <' . get_bloginfo( 'admin_email' ) . '>';
-
-							wp_mail( $dsubscribers_email, $subject, $message, $headers );
-
-						}
-
-						$result['type'] = 'success';
-						$result['msg']  = '<span class="dsubscribers_success">' . get_option( 'dsubscribers_subscribed_msg', 'Thank you for subscribing!' ) . '</span>';
-
-						wp_send_json_success( $result );
-					}
-
-					break;
+			} else {
+				$result['type'] = 'error';
+				$result['msg']  = '<span class="dsubscribers_error">' . get_option( 'dsubscribers_dont_exists_msg', 'Sorry, subscriber doesn\'t exists' ) . '</span>';
 			}
+
+			wp_send_json_success( $result );
+		}
+
+		$emails = $wpdb->get_results( "SELECT * FROM $table_name" );
+		foreach ( $emails as $email ) {
+
+			// if email exists -> redirect and show message exists
+			if ( $email->email === $dsubscribers_email ) {
+
+				$result['type'] = 'error';
+				$result['msg']  = '<span class="dsubscribers_error">' . get_option( 'dsubscribers_exists_msg', 'Sorry, this e-mail already exists' ) . '</span>';
+
+				wp_send_json_success( $result );
+
+			}
+		}
+
+		$inserted = $wpdb->insert(
+			$table_name,
+			array(
+				'email' => $dsubscribers_email,
+				'time'  => date( 'Y-m-d h:i:s', time() ),
+			),
+			array(
+				'%s',
+				'%s',
+			)
+		);
+
+		if ( $inserted ) {
+			if ( get_option( 'dsubscribers_send_checkbox' ) == 'on' ) {
+
+				$subject = 'The subject';
+
+				$message = get_option( 'dsubscribers_message_block' );
+
+				$headers = 'From: ' . get_bloginfo( 'name' ) . ' <' . get_bloginfo( 'admin_email' ) . '>';
+
+				wp_mail( $dsubscribers_email, $subject, $message, $headers );
+			}
+
+			$result['type'] = 'success';
+			$result['msg']  = '<span class="dsubscribers_success">' . get_option( 'dsubscribers_subscribed_msg', 'Thank you for subscribing!' ) . '</span>';
+
+			wp_send_json_success( $result );
 		}
 	}
 
