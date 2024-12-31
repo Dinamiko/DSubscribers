@@ -69,7 +69,7 @@ function init(): void {
 	);
 
 	$instance = DSubscribers::instance( __FILE__, '1.2.1' );
-	Settings::instance( $instance );
+	Settings::instance( __FILE__ );
 	Table::instance( $instance );
 }
 

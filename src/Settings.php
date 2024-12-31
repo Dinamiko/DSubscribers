@@ -8,55 +8,98 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 class Settings {
+	/**
+	 * Class instance.
+	 *
+	 * @var null
+	 */
+	private static $instance = null;
 
-	private static $_instance = null;
+	/**
+	 * Plugin file.
+	 *
+	 * @var string
+	 */
+	public $file;
 
-	public $parent   = null;
-	public $base     = '';
-	public $settings = array();
+	/**
+	 * Plugin base name.
+	 *
+	 * @var string
+	 */
+	private $base;
 
-	public function __construct( $parent ) {
+	/**
+	 * Plugin settings.
+	 *
+	 * @var array
+	 */
+	private $settings = array();
 
-		$this->parent = $parent;
+	/**
+	 * Settings constructor.
+	 *
+	 * @param string $file Plugin file.
+	 */
+	public function __construct( string $file ) {
 
-		// settings in wp_options table
+		$this->file = $file;
 		$this->base = 'dsubscribers_';
 
 		add_action( 'admin_init', array( $this, 'init_settings' ) );
 		add_action( 'admin_init', array( $this, 'register_settings' ) );
 		add_action( 'admin_menu', array( $this, 'add_menu_item' ) );
 
-		add_filter( 'plugin_action_links_' . plugin_basename( $this->parent->file ), array( $this, 'add_settings_link' ) );
+		add_filter( 'plugin_action_links_' . plugin_basename( $this->file ), array( $this, 'add_settings_link' ) );
 	}
 
-	public function init_settings() {
+	/**
+	 * Initialize settings.
+	 *
+	 * @return void
+	 */
+	public function init_settings(): void {
 
 		$this->settings = $this->settings_fields();
 	}
 
+	/**
+	 * Add menu item.
+	 *
+	 * @return void
+	 */
 	public function add_menu_item() {
-		$page = add_options_page(
+		add_options_page(
 			__( 'DSubscribers Settings', 'dsubscribers' ),
 			__( 'DSubscribers Settings', 'dsubscribers' ),
 			'manage_options',
 			'dsubscribers_settings',
 			array( $this, 'settings_page' )
 		);
-
-		add_action( 'admin_print_styles-' . $page, array( $this, 'settings_assets' ) );
 	}
 
-	public function settings_assets() {}
-
-
+	/**
+	 * Add settings link in Plugins page.
+	 *
+	 * @param array $links List of links.
+	 * @return array
+	 */
 	public function add_settings_link( $links ) {
+		if ( ! is_array( $links ) ) {
+			return $links;
+		}
 
-		$settings_link = '<a href="options-general.php?page=dsubscribers_settings">' . __( 'Settings', 'dsubscribers' ) . '</a>';
-		array_push( $links, $settings_link );
+		$links[] = '<a href="options-general.php?page=dsubscribers_settings">' . __( 'Settings', 'dsubscribers' ) . '</a>';
+
 		return $links;
 	}
 
-	private function settings_fields() {
+	/**
+	 * Returns plugin settings fields.
+	 *
+	 * @return array
+	 */
+	private function settings_fields(): array {
 
 		$settings['subscriber_email'] = array(
 
@@ -129,12 +172,15 @@ class Settings {
 			),
 		);
 
-		$settings = apply_filters( 'dsubscribers_settings_fields', $settings );
-
-		return $settings;
+		return apply_filters( 'dsubscribers_settings_fields', $settings );
 	}
 
-	public function register_settings() {
+	/**
+	 * Register plugin settings.
+	 *
+	 * @return void
+	 */
+	public function register_settings(): void {
 
 		if ( is_array( $this->settings ) ) {
 
@@ -162,12 +208,26 @@ class Settings {
 		}
 	}
 
+	/**
+	 * Add settings section
+	 *
+	 * @param array $section Settings section.
+	 * @return void
+	 */
 	public function settings_section( $section ) {
+		if ( ! is_array( $section ) ) {
+			return;
+		}
 
-		$html = '<p> ' . $this->settings[ $section['id'] ]['description'] . '</p>' . "\n";
-		echo $html;
+		echo wp_kses_post( '<p> ' . $this->settings[ $section['id'] ]['description'] . '</p>' . "\n" );
 	}
 
+	/**
+	 * Renders the settings fields.
+	 *
+	 * @param array $args The fields to display.
+	 * @return void
+	 */
 	public function display_field( $args ) {
 
 		$field = $args['field'];
@@ -208,7 +268,7 @@ class Settings {
 
 			case 'checkbox':
 				$checked = '';
-				if ( $option && 'on' == $option ) {
+				if ( $option && 'on' === $option ) {
 					$checked = 'checked="checked"';
 				}
 				$html .= '<input id="' . esc_attr( $field['id'] ) . '" type="' . $field['type'] . '" name="' . esc_attr( $option_name ) . '" ' . $checked . '/>' . "\n";
@@ -217,7 +277,7 @@ class Settings {
 			case 'checkbox_multi':
 				foreach ( $field['options'] as $k => $v ) {
 					$checked = false;
-					if ( in_array( $k, $data ) ) {
+					if ( in_array( $k, $data, true ) ) {
 						$checked = true;
 					}
 					$html .= '<label for="' . esc_attr( $field['id'] . '_' . $k ) . '"><input type="checkbox" ' . checked( $checked, true, false ) . ' name="' . esc_attr( $option_name ) . '[]" value="' . esc_attr( $k ) . '" id="' . esc_attr( $field['id'] . '_' . $k ) . '" /> ' . $v . '</label> ';
@@ -227,7 +287,7 @@ class Settings {
 			case 'radio':
 				foreach ( $field['options'] as $k => $v ) {
 					$checked = false;
-					if ( $k == $data ) {
+					if ( $k === $data ) {
 						$checked = true;
 					}
 					$html .= '<label for="' . esc_attr( $field['id'] . '_' . $k ) . '"><input type="radio" ' . checked( $checked, true, false ) . ' name="' . esc_attr( $option_name ) . '" value="' . esc_attr( $k ) . '" id="' . esc_attr( $field['id'] . '_' . $k ) . '" /> ' . $v . '</label> ';
@@ -238,7 +298,7 @@ class Settings {
 				$html .= '<select name="' . esc_attr( $option_name ) . '" id="' . esc_attr( $field['id'] ) . '">';
 				foreach ( $field['options'] as $k => $v ) {
 					$selected = false;
-					if ( $k == $data ) {
+					if ( $k === $data ) {
 						$selected = true;
 					}
 					$html .= '<option ' . selected( $selected, true, false ) . ' value="' . esc_attr( $k ) . '">' . $v . '</option>';
@@ -250,7 +310,7 @@ class Settings {
 				$html .= '<select name="' . esc_attr( $option_name ) . '[]" id="' . esc_attr( $field['id'] ) . '" multiple="multiple">';
 				foreach ( $field['options'] as $k => $v ) {
 					$selected = false;
-					if ( in_array( $k, $data ) ) {
+					if ( in_array( $k, $data, true ) ) {
 						$selected = true;
 					}
 					$html .= '<option ' . selected( $selected, true, false ) . ' value="' . esc_attr( $k ) . '" />' . $v . '</label> ';
@@ -263,15 +323,15 @@ class Settings {
 				if ( $data ) {
 					$image_thumb = wp_get_attachment_thumb_url( $data );
 				}
-				$html .= '<img id="' . $option_name . '_preview" class="image_preview" src="' . $image_thumb . '" /><br/>' . "\n";
-				$html .= '<input id="' . $option_name . '_button" type="button" data-uploader_title="' . __( 'Upload an image', 'dsubscribers' ) . '" data-uploader_button_text="' . __( 'Use image', 'dsubscribers' ) . '" class="image_upload_button button" value="' . __( 'Upload new image', 'dsubscribers' ) . '" />' . "\n";
-				$html .= '<input id="' . $option_name . '_delete" type="button" class="image_delete_button button" value="' . __( 'Remove image', 'dsubscribers' ) . '" />' . "\n";
-				$html .= '<input id="' . $option_name . '" class="image_data_field" type="hidden" name="' . $option_name . '" value="' . $data . '"/><br/>' . "\n";
+				$html .= '<img id="' . esc_attr( $option_name ) . '_preview" class="image_preview" src="' . esc_attr( $image_thumb ) . '" /><br/>' . "\n";
+				$html .= '<input id="' . esc_attr( $option_name ) . '_button" type="button" data-uploader_title="' . __( 'Upload an image', 'dsubscribers' ) . '" data-uploader_button_text="' . __( 'Use image', 'dsubscribers' ) . '" class="image_upload_button button" value="' . __( 'Upload new image', 'dsubscribers' ) . '" />' . "\n";
+				$html .= '<input id="' . esc_attr( $option_name ) . '_delete" type="button" class="image_delete_button button" value="' . __( 'Remove image', 'dsubscribers' ) . '" />' . "\n";
+				$html .= '<input id="' . esc_attr( $option_name ) . '" class="image_data_field" type="hidden" name="' . esc_attr( $option_name ) . '" value="' . esc_attr( $data ) . '"/><br/>' . "\n";
 				break;
 
 			case 'color':
 				?><div class="color-picker" style="position:relative;">
-					<input type="text" name="<?php esc_attr_e( $option_name ); ?>" class="color" value="<?php esc_attr_e( $data ); ?>" />
+					<input type="text" name="<?php esc_attr( $option_name ); ?>" class="color" value="<?php esc_attr( $data ); ?>" />
 					<div style="position:absolute;background:#FFF;z-index:99;border-radius:100%;" class="colorpicker"></div>
 				</div>
 				<?php
@@ -284,33 +344,29 @@ class Settings {
 			case 'checkbox_multi':
 			case 'radio':
 			case 'select_multi':
-				$html .= '<br/><span class="description">' . $field['description'] . '</span>';
+				$html .= '<br/><span class="description">' . esc_attr( $field['description'] ) . '</span>';
 				break;
 
 			default:
-				$html .= '<label for="' . esc_attr( $field['id'] ) . '"><span class="description">' . $field['description'] . '</span></label>' . "\n";
+				$html .= '<label for="' . esc_attr( $field['id'] ) . '"><span class="description">' . esc_attr( $field['description'] ) . '</span></label>' . "\n";
 				break;
 		}
 
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		echo $html;
 	}
 
-	public function validate_field( $data ) {
-
-		if ( $data && strlen( $data ) > 0 && $data != '' ) {
-			$data = urlencode( strtolower( str_replace( ' ', '-', $data ) ) );
-		}
-
-		return $data;
-	}
-
-	public function settings_page() {
+	/**
+	 * Render settings page content.
+	 *
+	 * @return void
+	 */
+	public function settings_page(): void {
 
 		$html      = '<div class="wrap" id="dsubscribers_settings">' . "\n";
 			$html .= '<h2>' . __( 'DSubscribers Settings', 'dsubscribers' ) . '</h2>' . "\n";
 			$html .= '<form method="post" action="options.php" enctype="multipart/form-data">' . "\n";
 
-				// Get settings fields
 				ob_start();
 				settings_fields( 'dsubscribers_settings' );
 				do_settings_sections( 'dsubscribers_settings' );
@@ -322,25 +378,24 @@ class Settings {
 			$html         .= '</form>' . "\n";
 		$html             .= '</div>' . "\n";
 
+        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 		echo $html;
 	}
 
-	public static function instance( $parent ) {
+	/**
+	 * Returns a unique instance of this class.
+	 *
+	 * @param string $file The plugin file.
+	 * @return self|null
+	 */
+	public static function instance( string $file ) {
 
-		if ( is_null( self::$_instance ) ) {
+		if ( is_null( self::$instance ) ) {
 
-			self::$_instance = new self( $parent );
+			self::$instance = new self( $file );
 
 		}
 
-		return self::$_instance;
-	}
-
-	public function __clone() {
-		_doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; huh?' ), $this->parent->_version );
-	}
-
-	public function __wakeup() {
-		_doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; huh?' ), $this->parent->_version );
+		return self::$instance;
 	}
 }

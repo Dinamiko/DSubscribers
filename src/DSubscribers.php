@@ -12,7 +12,7 @@ class DSubscribers {
 	private static $instance = null;
 
 	/**
-	 * Pluguin file.
+	 * Plugin file.
 	 *
 	 * @var string
 	 */
@@ -121,7 +121,6 @@ class DSubscribers {
 	 * @return void
 	 */
 	public function dsubscribers_ajax() {
-
 		$dsubscribers_nonce = sanitize_text_field( wp_unslash( $_POST['dsubscribers_nonce'] ?? null ) );
 		if ( ! isset( $dsubscribers_nonce ) || ! wp_verify_nonce( $dsubscribers_nonce, 'dsubscribers_form_action' ) ) {
 
@@ -161,10 +160,12 @@ class DSubscribers {
 			wp_send_json_success( $result );
 		}
 
-		$emails = $wpdb->get_results( "SELECT * FROM $table_name" );
-		foreach ( $emails as $email ) {
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery
+		$emails = $wpdb->get_results(
+			$wpdb->prepare( 'SELECT * FROM %s', $table_name )
+		);
 
-			// if email exists -> redirect and show message exists
+		foreach ( $emails as $email ) {
 			if ( $email->email === $dsubscribers_email ) {
 
 				$result['type'] = 'error';
@@ -175,11 +176,12 @@ class DSubscribers {
 			}
 		}
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
 		$inserted = $wpdb->insert(
 			$table_name,
 			array(
 				'email' => $dsubscribers_email,
-				'time'  => date( 'Y-m-d h:i:s', time() ),
+				'time'  => gmdate( 'Y-m-d h:i:s', time() ),
 			),
 			array(
 				'%s',
@@ -188,7 +190,7 @@ class DSubscribers {
 		);
 
 		if ( $inserted ) {
-			if ( get_option( 'dsubscribers_send_checkbox' ) == 'on' ) {
+			if ( get_option( 'dsubscribers_send_checkbox' ) === 'on' ) {
 
 				$subject = 'The subject';
 
@@ -207,9 +209,12 @@ class DSubscribers {
 	}
 
 	/**
-	 * [dsubscribers]
+	 * Returns shortcode content.
+	 *
+	 * @param array $atts Shortcode attributes.
+	 * @return string
 	 */
-	public function dsubscribers_shortcode( $atts ) {
+	public function dsubscribers_shortcode( $atts ): string {
 
 		$a = shortcode_atts(
 			array(
@@ -225,7 +230,7 @@ class DSubscribers {
 
 			$content .= '<p id="dsubscribers_msg"></p>';
 
-		if ( $a['type'] == 'widget' ) {
+		if ( $a['type'] === 'widget' ) {
 
 			$content .= '<p id="dsubscribers_msg_widget"></p>';
 
@@ -247,21 +252,19 @@ class DSubscribers {
 
 			}
 
-				// $content .= '<input type="hidden" id="dsubscribers_nonce" name="dsubscribers_nonce" value="'. $nonce .'" />';
 				$content .= wp_nonce_field( 'dsubscribers_form_action', 'dsubscribers_form_nonce' );
 
 				$content .= '</form>';
 
 		} else {
 
-			if ( $a['action'] == 'unsubscribe' ) {
+			if ( $a['action'] === 'unsubscribe' ) {
 
 				$content .= '<p id="dsubscribers_unsubscribe_msg"></p>';
 				$content .= '<form id="form-validation-unsubscribe" class="form-container">';
 
 			} else {
 
-				// $content .= '<p id="dsubscribers_msg"></p>';
 				$content .= '<form id="form-validation" class="form-container">';
 
 			}
@@ -293,28 +296,28 @@ class DSubscribers {
 		return $content;
 	}
 
-	public function install() {
-
-		// plugin version
-		$this->_log_version_number();
+	/**
+	 * Runs on plugin activation.
+	 *
+	 * @return void
+	 */
+	public function install(): void {
+		update_option( $this->token . '_version', $this->version );
 	}
 
+	/**
+	 * Returns a unique instance of this class.
+	 *
+	 * @param string $file Plugin file.
+	 * @param string $version Plugin version.
+	 *
+	 * @return self|null
+	 */
 	public static function instance( $file = '', $version = '1.0.0' ) {
 		if ( is_null( self::$instance ) ) {
 			self::$instance = new self( $file, $version );
 		}
+
 		return self::$instance;
-	}
-
-	public function __clone() {
-		_doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; huh?' ), $this->version );
-	}
-
-	public function __wakeup() {
-		_doing_it_wrong( __FUNCTION__, __( 'Cheatin&#8217; huh?' ), $this->version );
-	}
-
-	private function _log_version_number() {
-		update_option( $this->token . '_version', $this->version );
 	}
 }

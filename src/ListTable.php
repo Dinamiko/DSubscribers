@@ -3,15 +3,14 @@ declare( strict_types = 1 );
 
 namespace Dinamiko\Dsubscribers;
 
-if ( ! class_exists( 'WP_List_Table' ) ) {
+use WP_List_Table;
 
-	require_once ABSPATH . 'wp-admin/includes/class-wp-list-table.php';
+class ListTable extends WP_List_Table {
 
-}
-
-class ListTable extends \WP_List_Table {
-
-	function __construct() {
+	/**
+	 * ListTable constructor.
+	 */
+	public function __construct() {
 
 		parent::__construct(
 			array(
@@ -22,18 +21,12 @@ class ListTable extends \WP_List_Table {
 		);
 	}
 
-	function extra_tablenav( $which ) {
-
-		if ( $which == 'top' ) { ?>
-
-			<?php
-		}
-
-		if ( $which == 'bottom' ) {
-		}
-	}
-
-	function get_columns() {
+	/**
+	 * Gets a list of columns.
+	 *
+	 * @return array
+	 */
+	public function get_columns(): array {
 
 		$columns = array(
 			'email'   => __( 'E-mail', 'dsubscribers' ),
@@ -44,24 +37,32 @@ class ListTable extends \WP_List_Table {
 		return $columns;
 	}
 
-	function prepare_items( $search = null ) {
-
-		global $wpdb, $_wp_column_headers;
-		$screen     = get_current_screen();
+	/**
+	 * Prepares the list of items for displaying.
+	 *
+	 * @param string $search The search term.
+	 * @return void
+	 */
+	public function prepare_items( $search = null ): void {
+		global $wpdb;
 		$table_name = $wpdb->prefix . 'dsubscribers';
 
-		if ( $search != null ) {
+		if ( $search !== null ) {
+			$query = $wpdb->prepare(
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				"SELECT * FROM $table_name WHERE email=%s",
+				sanitize_text_field( wp_unslash( $search ) )
+			);
 
-			$query = "SELECT * FROM $table_name WHERE email='$search'";
-
-			$orderby = ! empty( $_GET['orderby'] ) ? mysql_real_escape_string( $_GET['orderby'] ) : 'ASC';
-			$order   = ! empty( $_GET['order'] ) ? mysql_real_escape_string( $_GET['order'] ) : '';
+			$orderby = ! empty( $_GET['orderby'] ) ? sanitize_text_field( wp_unslash( $_GET['orderby'] ) ) : 'ASC';
+			$order   = ! empty( $_GET['order'] ) ? sanitize_text_field( wp_unslash( $_GET['order'] ) ) : '';
 			if ( ! empty( $orderby ) & ! empty( $order ) ) {
-				$query .= ' ORDER BY ' . $orderby . ' ' . $order; }
+				$query .= ' ORDER BY ' . $orderby . ' ' . $order;
+			}
 
 			$totalitems = $wpdb->query( $query );
 			$perpage    = 5;
-			$paged      = ! empty( $_GET['paged'] ) ? mysql_real_escape_string( $_GET['paged'] ) : '';
+			$paged      = ! empty( $_GET['paged'] ) ? sanitize_text_field( $_GET['paged'] ) : '';
 
 			if ( empty( $paged ) || ! is_numeric( $paged ) || $paged <= 0 ) {
 				$paged = 1; }
@@ -92,14 +93,14 @@ class ListTable extends \WP_List_Table {
 
 			$query = "SELECT * FROM $table_name ORDER BY id DESC";
 
-			$orderby = ! empty( $_GET['orderby'] ) ? mysql_real_escape_string( $_GET['orderby'] ) : 'ASC';
-			$order   = ! empty( $_GET['order'] ) ? mysql_real_escape_string( $_GET['order'] ) : '';
+			$orderby = ! empty( $_GET['orderby'] ) ? sanitize_text_field( $_GET['orderby'] ) : 'ASC';
+			$order   = ! empty( $_GET['order'] ) ? sanitize_text_field( $_GET['order'] ) : '';
 			if ( ! empty( $orderby ) & ! empty( $order ) ) {
 				$query .= ' ORDER BY ' . $orderby . ' ' . $order; }
 
 			$totalitems = $wpdb->query( $query );
 			$perpage    = 5;
-			$paged      = ! empty( $_GET['paged'] ) ? mysql_real_escape_string( $_GET['paged'] ) : '';
+			$paged      = ! empty( $_GET['paged'] ) ? sanitize_text_field( $_GET['paged'] ) : '';
 
 			if ( empty( $paged ) || ! is_numeric( $paged ) || $paged <= 0 ) {
 				$paged = 1; }
@@ -129,7 +130,12 @@ class ListTable extends \WP_List_Table {
 		}
 	}
 
-	function display_rows() {
+	/**
+	 * Generates the list table rows.
+	 *
+	 * @return void
+	 */
+	public function display_rows(): void {
 
 		$records = $this->items;
 
@@ -150,7 +156,7 @@ class ListTable extends \WP_List_Table {
 					}
 					$attributes = $class . $style;
 
-					$paged      = ! empty( $_GET['paged'] ) ? mysql_real_escape_string( $_GET['paged'] ) : '';
+					$paged      = ! empty( $_GET['paged'] ) ? sanitize_text_field( $_GET['paged'] ) : '';
 					$editlink   = sprintf( '<a href="?page=%s&action=%s&dsubscribers=%s&paged=%s">' . __( 'Edit', 'dsubscribers' ) . '</a>', $_REQUEST['page'], 'edit', (int) $rec->id, $paged );
 					$deletelink = sprintf( '<a style="color:#ac0000;" href="?page=%s&action=%s&dsubscribers=%s&paged=%s">' . __( 'Delete', 'dsubscribers' ) . '</a>', $_REQUEST['page'], 'delete', (int) $rec->id, $paged );
 
