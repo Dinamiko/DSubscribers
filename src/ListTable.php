@@ -139,8 +139,6 @@ class ListTable extends WP_List_Table {
 						wp_create_nonce( 'dsubscribers_delete_' . $rec->id )
 					);
 
-					// echo wp_nonce_url( $url, 'action' );
-
 					switch ( $column_name ) {
 
 						case 'email':
