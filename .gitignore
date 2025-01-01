@@ -5,3 +5,4 @@ artifacts
 test-results
 wordpress
 /vendor/
+.phpunit.cache
