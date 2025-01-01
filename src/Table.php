@@ -44,15 +44,15 @@ class Table {
 	 * @return void
 	 */
 	public function dsubscribers_menu_page() {
+		$export_csv = sprintf(
+			'admin.php?page=dsubscribers&action=export&nonce=%s',
+			wp_create_nonce( 'dsubscribers_export_csv' )
+		);
 		?>
 		<div class="wrap">
-
-		<h2 style="position:relative;width:100%;float:left;margin-bottom:15px;">DSubscribers
-
-			<a style="position:absolute;top:10px;right:15px;" class="button-primary" href="admin.php?page=dsubscribers&action=export">Export (.csv)</a>
-
-		</h2>
-
+			<h2 style="position:relative;width:100%;float:left;margin-bottom:15px;">DSubscribers
+				<a style="position:absolute;top:10px;right:15px;" class="button-primary" href="<?php echo esc_url( $export_csv ); ?>">Export (.csv)</a>
+			</h2>
 
 		<?php
         // phpcs:disable WordPress.Security.NonceVerification.Recommended
@@ -73,15 +73,14 @@ class Table {
 			?>
 
 			<form id="dsubscribers-form" method="post">
+				<label><?php echo esc_html__( 'Email', 'dsubscribers' ); ?>:</label>
+				<input type="text" name="email" id="email" value="<?php echo esc_attr( $row->email ); ?>"/>
 
-			<label><?php esc_html__( 'Email', 'dsubscribers' ); ?>:</label>
-			<input type="text" name="email" id="email" value="<?php echo esc_attr( $row->email ); ?>" />
-
-			<div style="float:left; width:100%;margin-top:20px;">
-				<input type="hidden" name="dsubscribers_id" value="<?php echo esc_attr( $row->id ); ?>" />
-				<input type="submit" class="button-primary" value="Save"></input>
-			</div>
-
+				<div style="float:left; width:100%;margin-top:20px;">
+					<input type="hidden" name="dsubscribers_id" value="<?php echo esc_attr( $row->id ); ?>"/>
+					<input type="submit" class="button-primary" value="Save"/>
+				</div>
+				<?php wp_nonce_field( 'dsubscribers_update_email_action', 'dsubscribers_update_email_nonce_field' ); ?>
 			</form>
 
 		<?php } ?>
@@ -90,23 +89,12 @@ class Table {
 
 		$wp_list_table = new ListTable();
 
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing
 		$search_term = sanitize_text_field( wp_unslash( $_POST['s'] ?? '' ) );
-		if ( $search_term ) {
-
-			$wp_list_table->prepare_items( $search_term );
-
-		} else {
-
-			$wp_list_table->prepare_items();
-
-		}
-
+		$wp_list_table->prepare_items( $search_term );
 		?>
 
-
-
 		<form method="post">
-
 			<input type="hidden" name="page" value="
 			<?php
 			// phpcs:ignore WordPress.Security.NonceVerification.Recommended
@@ -115,7 +103,7 @@ class Table {
 			" />
 
 			<?php $wp_list_table->search_box( 'Search', 'dsubscribers-id' ); ?>
-
+			<?php wp_nonce_field( 'dsubscribers_search_action', 'dsubscribers_search_nonce_field' ); ?>
 		</form>
 
 		<?php $wp_list_table->display(); ?>
@@ -133,6 +121,11 @@ class Table {
 	public function dsubscribers_update() {
 		$dsubscribers_id = sanitize_text_field( wp_unslash( $_POST['dsubscribers_id'] ?? '' ) );
 		if ( ! $dsubscribers_id ) {
+			return;
+		}
+
+		$nonce_field = sanitize_text_field( wp_unslash( $_POST['dsubscribers_update_email_nonce_field'] ?? '' ) );
+		if ( ! $nonce_field || ! wp_verify_nonce( $nonce_field, 'dsubscribers_update_email_action' ) ) {
 			return;
 		}
 
@@ -160,12 +153,12 @@ class Table {
 	 *
 	 * @return void
 	 */
-	public function dsubscribers_delete() {
-
+	public function dsubscribers_delete(): void {
 		$dsubscribers = sanitize_text_field( wp_unslash( $_GET['dsubscribers'] ?? '' ) );
 		$action       = sanitize_text_field( wp_unslash( $_GET['action'] ?? '' ) );
-		if ( $dsubscribers && $action === 'delete' ) {
+		$nonce        = sanitize_text_field( wp_unslash( $_GET['nonce'] ?? '' ) );
 
+		if ( $dsubscribers && $action === 'delete' && wp_verify_nonce( $nonce, "dsubscribers_delete_{$dsubscribers}" ) ) {
 			global $wpdb;
 			$id         = intval( $dsubscribers );
 			$table_name = $wpdb->prefix . 'dsubscribers';
@@ -175,7 +168,6 @@ class Table {
 
 			$paged = sanitize_text_field( wp_unslash( $_GET['paged'] ?? '' ) );
 			header( "Location:admin.php?page=dsubscribers&paged=$paged" );
-
 		}
 	}
 
@@ -186,6 +178,10 @@ class Table {
 	 * @return void
 	 */
 	public function dsubscribers_export() {
+		$nonce = sanitize_text_field( wp_unslash( $_GET['nonce'] ?? '' ) );
+		if ( ! wp_verify_nonce( $nonce, 'dsubscribers_export_csv' ) ) {
+			return;
+		}
 
 		$action = sanitize_text_field( wp_unslash( $_GET['action'] ?? '' ) );
 		if ( $action === 'export' ) {

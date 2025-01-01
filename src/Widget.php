@@ -20,7 +20,7 @@ class Widget extends WP_Widget {
 	}
 
 	/**
-	 * @param array $args Widget arguments.
+	 * @param array    $args Widget arguments.
 	 * @param $instance
 	 *
 	 * @return void
