@@ -7,16 +7,24 @@
             "Dinamiko\\Dsubscribers\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Dinamiko\\Dsubscribers\\Tests\\Integration\\": "tests/integration/"
+        }
+    },
     "require": {
+        "php": "^7.4 | ^8.0",
         "johnpbloch/wordpress": "^6.7"
+    },
+    "require-dev": {
+        "wp-coding-standards/wpcs": "^3.0",
+        "phpunit/phpunit": "^9.6"
     },
     "config": {
         "allow-plugins": {
+            "composer/installers": true,
             "johnpbloch/wordpress-core-installer": true,
             "dealerdirect/phpcodesniffer-composer-installer": true
         }
-    },
-    "require-dev": {
-        "wp-coding-standards/wpcs": "^3.0"
     }
 }
