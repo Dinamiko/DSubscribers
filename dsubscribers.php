@@ -68,9 +68,9 @@ function init(): void {
 		}
 	);
 
-	$instance = DSubscribers::instance( __FILE__, '1.2.1' );
+	DSubscribers::instance( __FILE__, '1.2.2' );
 	Settings::instance( __FILE__ );
-	Table::instance( $instance );
+	Table::instance();
 }
 
 add_action( 'plugins_loaded', __NAMESPACE__ . '\\init' );

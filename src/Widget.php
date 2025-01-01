@@ -7,6 +7,9 @@ use WP_Widget;
 
 class Widget extends WP_Widget {
 
+	/**
+	 * Widget constructor.
+	 */
 	public function __construct() {
 
 		parent::__construct(
@@ -16,6 +19,12 @@ class Widget extends WP_Widget {
 		);
 	}
 
+	/**
+	 * @param array $args Widget arguments.
+	 * @param $instance
+	 *
+	 * @return void
+	 */
 	public function widget( $args, $instance ) {
 
 		$title = apply_filters( 'widget_title', $instance['title'] );
