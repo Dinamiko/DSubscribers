@@ -74,3 +74,24 @@ function init(): void {
 }
 
 add_action( 'plugins_loaded', __NAMESPACE__ . '\\init' );
+
+register_activation_hook( __FILE__, function () {
+	update_option( 'dsubscribers_version', '1.2.2' );
+
+	global $wpdb;
+	global $jal_db_version;
+
+	$table_name = $wpdb->prefix . 'dsubscribers';
+
+	$sql = "CREATE TABLE $table_name (
+			  		id mediumint(9) NOT NULL AUTO_INCREMENT,
+			  		time datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
+			  		email VARCHAR(200) DEFAULT '' NOT NULL,
+					UNIQUE KEY id (id)
+				);";
+
+	require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+	dbDelta( $sql );
+
+	add_option( 'jal_db_version', $jal_db_version );
+});

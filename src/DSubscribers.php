@@ -3,6 +3,8 @@ declare( strict_types = 1 );
 
 namespace Dinamiko\Dsubscribers;
 
+use Dinamiko\Dsubscribers\Api\Subscriber;
+
 class DSubscribers {
 	/**
 	 * Plugin instance.
@@ -42,9 +44,6 @@ class DSubscribers {
 		$this->file    = $file;
 		$this->version = $version;
 		$this->token   = 'dsubscribers';
-
-		register_activation_hook( $this->file, array( $this, 'install' ) );
-		register_activation_hook( $this->file, array( $this, 'dsubscribers_database_install' ) );
 
 		$this->load_plugin_textdomain();
 		add_action( 'init', array( $this, 'load_localisation' ), 0 );
@@ -88,31 +87,6 @@ class DSubscribers {
 
 		load_textdomain( $domain, WP_LANG_DIR . '/' . $domain . '/' . $domain . '-' . $locale . '.mo' );
 		load_plugin_textdomain( $domain, false, dirname( plugin_basename( $this->file ) ) . '/lang/' );
-	}
-
-	/**
-	 * Install the database.
-	 *
-	 * @return void
-	 */
-	public function dsubscribers_database_install(): void {
-
-		global $wpdb;
-		global $jal_db_version;
-
-		$table_name = $wpdb->prefix . 'dsubscribers';
-
-		$sql = "CREATE TABLE $table_name (
-			  		id mediumint(9) NOT NULL AUTO_INCREMENT,
-			  		time datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
-			  		email VARCHAR(200) DEFAULT '' NOT NULL,
-					UNIQUE KEY id (id)
-				);";
-
-		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
-		dbDelta( $sql );
-
-		add_option( 'jal_db_version', $jal_db_version );
 	}
 
 	/**
@@ -161,9 +135,7 @@ class DSubscribers {
 		}
 
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery
-		$emails = $wpdb->get_results(
-			$wpdb->prepare( 'SELECT * FROM %s', $table_name )
-		);
+		$emails = $wpdb->get_results( "SELECT * FROM {$table_name}" );
 
 		foreach ( $emails as $email ) {
 			if ( $email->email === $dsubscribers_email ) {
@@ -176,18 +148,10 @@ class DSubscribers {
 			}
 		}
 
+		$subscriber = new Subscriber();
+
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
-		$inserted = $wpdb->insert(
-			$table_name,
-			array(
-				'email' => $dsubscribers_email,
-				'time'  => gmdate( 'Y-m-d h:i:s', time() ),
-			),
-			array(
-				'%s',
-				'%s',
-			)
-		);
+		$inserted = $subscriber->create( $wpdb, $table_name, $dsubscribers_email );
 
 		if ( $inserted ) {
 			if ( get_option( 'dsubscribers_send_checkbox' ) === 'on' ) {
@@ -294,15 +258,6 @@ class DSubscribers {
 		$content .= '</div>';
 
 		return $content;
-	}
-
-	/**
-	 * Runs on plugin activation.
-	 *
-	 * @return void
-	 */
-	public function install(): void {
-		update_option( $this->token . '_version', $this->version );
 	}
 
 	/**
