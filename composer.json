@@ -1,5 +1,7 @@
 {
     "name": "dinamiko/dsubscribers",
+    "type": "wordpress-plugin",
+    "description": "Manage subscribers from your site with ease",
     "autoload": {
         "psr-4": {
             "Dinamiko\\Dsubscribers\\": "src/"
