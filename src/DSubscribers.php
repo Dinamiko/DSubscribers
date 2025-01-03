@@ -3,7 +3,8 @@ declare( strict_types = 1 );
 
 namespace Dinamiko\Dsubscribers;
 
-use Dinamiko\Dsubscribers\Api\Subscriber;
+use Dinamiko\Dsubscribers\Api\SubscriberRepository;
+use Exception;
 
 class DSubscribers {
 	/**
@@ -128,48 +129,37 @@ class DSubscribers {
 
 			} else {
 				$result['type'] = 'error';
-				$result['msg']  = '<span class="dsubscribers_error">' . get_option( 'dsubscribers_dont_exists_msg', 'Sorry, subscriber doesn\'t exists' ) . '</span>';
+				$result['msg']  = '<span class="dsubscribers_error">' . get_option( 'dsubscribers_dont_exists_msg', 'Sorry, subscriber_repository doesn\'t exists' ) . '</span>';
 			}
 
 			wp_send_json_success( $result );
 		}
 
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery
-		$emails = $wpdb->get_results( "SELECT * FROM {$table_name}" );
+		try {
+			$subscriber_repository = new SubscriberRepository();
+			$subscriber_repository->subscribe( $dsubscribers_email );
+		} catch ( Exception $exception ) {
+			$result['type'] = 'error';
+			$result['msg']  = '<span class="dsubscribers_error">' . get_option( 'dsubscribers_exists_msg', 'Sorry, this e-mail already exists' ) . '</span>';
 
-		foreach ( $emails as $email ) {
-			if ( $email->email === $dsubscribers_email ) {
-
-				$result['type'] = 'error';
-				$result['msg']  = '<span class="dsubscribers_error">' . get_option( 'dsubscribers_exists_msg', 'Sorry, this e-mail already exists' ) . '</span>';
-
-				wp_send_json_success( $result );
-
-			}
+			wp_send_json_error( $result );
 		}
 
-		$subscriber = new Subscriber();
+		if ( get_option( 'dsubscribers_send_checkbox' ) === 'on' ) {
 
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery
-		$inserted = $subscriber->create( $wpdb, $table_name, $dsubscribers_email );
+			$subject = 'The subject';
 
-		if ( $inserted ) {
-			if ( get_option( 'dsubscribers_send_checkbox' ) === 'on' ) {
+			$message = get_option( 'dsubscribers_message_block' );
 
-				$subject = 'The subject';
+			$headers = 'From: ' . get_bloginfo( 'name' ) . ' <' . get_bloginfo( 'admin_email' ) . '>';
 
-				$message = get_option( 'dsubscribers_message_block' );
-
-				$headers = 'From: ' . get_bloginfo( 'name' ) . ' <' . get_bloginfo( 'admin_email' ) . '>';
-
-				wp_mail( $dsubscribers_email, $subject, $message, $headers );
-			}
-
-			$result['type'] = 'success';
-			$result['msg']  = '<span class="dsubscribers_success">' . get_option( 'dsubscribers_subscribed_msg', 'Thank you for subscribing!' ) . '</span>';
-
-			wp_send_json_success( $result );
+			wp_mail( $dsubscribers_email, $subject, $message, $headers );
 		}
+
+		$result['type'] = 'success';
+		$result['msg']  = '<span class="dsubscribers_success">' . get_option( 'dsubscribers_subscribed_msg', 'Thank you for subscribing!' ) . '</span>';
+
+		wp_send_json_success( $result );
 	}
 
 	/**
