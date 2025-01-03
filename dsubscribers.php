@@ -33,6 +33,10 @@ function init(): void {
 		include_once __DIR__ . '/vendor/autoload.php';
 	}
 
+	DSubscribers::instance( __FILE__, '1.2.2' );
+	Settings::instance( __FILE__ );
+	Table::instance();
+
 	add_action(
 		'wp_enqueue_scripts',
 		function () {
@@ -68,6 +72,38 @@ function init(): void {
 		}
 	);
 
+	add_action('admin_menu', function () {
+		add_submenu_page(
+			'dsubscribers',
+			'Settings',
+			'Settings',
+			'manage_options',
+			'dsubscribers-settings',
+			function() {
+				echo '<div id="react-settings-page"></div>';
+			}
+		);
+	});
+
+	add_action( 'admin_enqueue_scripts', function($page) {
+		if($page !== 'dsubscribers_page_dsubscribers-settings') {
+			return;
+		}
+
+		$asset_file = require __DIR__ . '/build/admin.asset.php';
+
+		wp_register_script(
+			'dsubscribers-settings',
+			plugins_url( '/build/admin.js', __FILE__ ),
+			$asset_file['dependencies'],
+			$asset_file['version'],
+			true
+		);
+
+		wp_enqueue_script( 'dsubscribers-settings' );
+		wp_enqueue_style( 'wp-components' );
+	});
+
 	add_action('dsubscribers_subscribed', function(string $email) {
 		if ( get_option( 'dsubscribers_send_checkbox' ) === 'on' ) {
 			$subject = 'The subject';
@@ -78,9 +114,50 @@ function init(): void {
 		}
 	});
 
-	DSubscribers::instance( __FILE__, '1.2.2' );
-	Settings::instance( __FILE__ );
-	Table::instance();
+	function dsubscribers_register_settings() {
+		$default = array(
+			'send_checkbox' => false,
+			'subscribed_msg' => __( 'Thank you for subscribing!', 'dsubscribers' ),
+			'exists_msg' => __( 'Sorry, this e-mail already exists', 'dsubscribers' ),
+			'unsubscribed_msg' => __( 'Sorry, this e-mail already exists', 'dsubscribers' ),
+			'dont_exists_msg' => __( 'Sorry, subscriber do not exists', 'dsubscribers' ),
+		);
+
+		$schema  = array(
+			'type'       => 'object',
+			'properties' => array(
+				'send_checkbox' => array(
+					'type' => 'boolean',
+				),
+				'subscribed_msg' => array(
+					'type' => 'string',
+				),
+				'exists_msg' => array(
+					'type' => 'string',
+				),
+				'unsubscribed_msg' => array(
+					'type' => 'string',
+				),
+				'dont_exists_msg' => array(
+					'type' => 'string',
+				),
+			),
+		);
+
+		register_setting(
+			'dsubscribers',
+			'dsubscribers_options',
+			array(
+				'type'         => 'object',
+				'default'      => $default,
+				'show_in_rest' => array(
+					'schema' => $schema,
+				),
+			)
+		);
+	}
+
+	add_action( 'init', __NAMESPACE__ . '\\dsubscribers_register_settings' );
 }
 
 add_action( 'plugins_loaded', __NAMESPACE__ . '\\init' );
@@ -105,3 +182,5 @@ register_activation_hook( __FILE__, function () {
 
 	add_option( 'jal_db_version', $jal_db_version );
 });
+
+

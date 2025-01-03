@@ -36,7 +36,7 @@ class Table {
 	public function register_dsubscribers_menu_page() {
 
 		add_menu_page( 'DSubscribers', 'DSubscribers', 'manage_options', 'dsubscribers', array( $this, 'dsubscribers_menu_page' ), 'dashicons-groups' );
-	}
+    }
 
 	/**
 	 * Add DSubscribers menu page.
