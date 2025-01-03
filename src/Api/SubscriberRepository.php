@@ -7,6 +7,7 @@ use Exception;
 use wpdb;
 
 class SubscriberRepository {
+
 	/**
 	 * Subscribe user with the given email.
 	 *
@@ -36,7 +37,30 @@ class SubscriberRepository {
 		);
 	}
 
-	public function subscriber( string $email ): array {
+	/**
+	 * Unsubscribe user with the given email.
+	 *
+	 * @param string $email
+	 * @return void
+	 */
+	public function unsubscribe( string $email ): void {
+		if ( ! $this->email_exist( $email ) ) {
+			throw new Exception( 'Email doesn\'t exists.' );
+		}
+
+		global $wpdb;
+		$table_name = $wpdb->prefix . 'dsubscribers';
+
+		$wpdb->delete( $table_name, array( 'email' => $email ) );
+	}
+
+	/**
+	 * Returns a subscriber entry from the given email.
+	 *
+	 * @param string $email
+	 * @return array|null
+	 */
+	public function subscriber( string $email ): ?array {
 		global $wpdb;
 		$table_name = $wpdb->prefix . 'dsubscribers';
 
@@ -59,17 +83,8 @@ class SubscriberRepository {
 		global $wpdb;
 		$table_name = $wpdb->prefix . 'dsubscribers';
 
-		// phpcs:disable WordPress.DB.DirectDatabaseQuery
-		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-		$emails = $wpdb->get_results( "SELECT * FROM $table_name" );
-		// phpcs:enable
-
-		foreach ( $emails as $email ) {
-			if ( $email->email === $user_email ) {
-				return true;
-			}
-		}
-
-		return false;
+		return (bool) $wpdb->get_row(
+			$wpdb->prepare( "SELECT * FROM $table_name WHERE email = %s", $user_email )
+		);
 	}
 }

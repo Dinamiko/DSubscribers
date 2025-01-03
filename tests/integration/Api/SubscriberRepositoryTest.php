@@ -40,4 +40,18 @@ class SubscriberRepositoryTest extends TestCase {
 		$this->repository->subscribe( $this->email );
 		$this->repository->subscribe( $this->email );
 	}
+
+	public function test_unsubscribe() {
+		$this->repository->subscribe( $this->email );
+		$this->repository->unsubscribe( $this->email );
+
+		$subscriber = $this->repository->subscriber( $this->email );
+		$this->assertNull( $subscriber );
+	}
+
+	public function test_unsubscribe_email_not_exists() {
+		$this->expectException(Exception::class);
+
+		$this->repository->unsubscribe( $this->email );
+	}
 }

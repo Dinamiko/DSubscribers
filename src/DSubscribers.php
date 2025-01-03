@@ -91,46 +91,32 @@ class DSubscribers {
 	}
 
 	/**
-	 * Handles the subscribe ajax request.
+	 * Handles ajax subscription request.
 	 *
 	 * @return void
 	 */
 	public function dsubscribers_ajax() {
 		$dsubscribers_nonce = sanitize_text_field( wp_unslash( $_POST['dsubscribers_nonce'] ?? null ) );
 		if ( ! isset( $dsubscribers_nonce ) || ! wp_verify_nonce( $dsubscribers_nonce, 'dsubscribers_form_action' ) ) {
-
 			wp_send_json_error( 'Security check' );
-
 		}
 
-		global $wpdb;
-		$table_name          = $wpdb->prefix . 'dsubscribers';
 		$dsubscribers_action = sanitize_text_field( wp_unslash( $_POST['dsubscribers_action'] ?? '' ) );
 		$dsubscribers_email  = sanitize_email( wp_unslash( $_POST['dsubscribers_email'] ?? '' ) );
 
 		if ( $dsubscribers_action === 'unsubscribe' ) {
-			// phpcs:ignore WordPress.DB.DirectDatabaseQuery
-			$row = $wpdb->get_row(
-				$wpdb->prepare(
-				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-					"SELECT * FROM $table_name WHERE email=%s",
-					$dsubscribers_email
-				)
-			);
-
-			if ( $row ) {
-				$id = $row->id;
-
-				// phpcs:ignore WordPress.DB.DirectDatabaseQuery
-				$wpdb->delete( $wpdb->prefix . 'dsubscribers', array( 'ID' => $id ) );
-
-				$result['type'] = 'success';
-				$result['msg']  = '<span class="dsubscribers_success">' . get_option( 'dsubscribers_unsubscribed_msg', 'Unsubscribed correctly' ) . '</span>';
-
-			} else {
+			try {
+				$subscriber_repository = new SubscriberRepository();
+				$subscriber_repository->unsubscribe( $dsubscribers_email );
+			} catch(Exception $exception) {
 				$result['type'] = 'error';
-				$result['msg']  = '<span class="dsubscribers_error">' . get_option( 'dsubscribers_dont_exists_msg', 'Sorry, subscriber_repository doesn\'t exists' ) . '</span>';
+				$result['msg']  = '<span class="dsubscribers_error">' . get_option( 'dsubscribers_dont_exists_msg', 'Sorry, email doesn\'t exists' ) . '</span>';
+
+				wp_send_json_error( $result );
 			}
+
+			$result['type'] = 'success';
+			$result['msg']  = '<span class="dsubscribers_success">' . get_option( 'dsubscribers_unsubscribed_msg', 'Unsubscribed correctly' ) . '</span>';
 
 			wp_send_json_success( $result );
 		}
