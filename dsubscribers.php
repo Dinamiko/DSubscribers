@@ -68,6 +68,16 @@ function init(): void {
 		}
 	);
 
+	add_action('dsubscribers_subscribed', function(string $email) {
+		if ( get_option( 'dsubscribers_send_checkbox' ) === 'on' ) {
+			$subject = 'The subject';
+			$message = get_option( 'dsubscribers_message_block' );
+			$headers = 'From: ' . get_bloginfo( 'name' ) . ' <' . get_bloginfo( 'admin_email' ) . '>';
+
+			wp_mail( $email, $subject, $message, $headers );
+		}
+	});
+
 	DSubscribers::instance( __FILE__, '1.2.2' );
 	Settings::instance( __FILE__ );
 	Table::instance();

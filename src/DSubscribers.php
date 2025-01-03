@@ -108,7 +108,7 @@ class DSubscribers {
 			try {
 				$subscriber_repository = new SubscriberRepository();
 				$subscriber_repository->unsubscribe( $dsubscribers_email );
-			} catch(Exception $exception) {
+			} catch ( Exception $exception ) {
 				$result['type'] = 'error';
 				$result['msg']  = '<span class="dsubscribers_error">' . get_option( 'dsubscribers_dont_exists_msg', 'Sorry, email doesn\'t exists' ) . '</span>';
 
@@ -124,28 +124,17 @@ class DSubscribers {
 		try {
 			$subscriber_repository = new SubscriberRepository();
 			$subscriber_repository->subscribe( $dsubscribers_email );
+
+			$result['type'] = 'success';
+			$result['msg']  = '<span class="dsubscribers_success">' . get_option( 'dsubscribers_subscribed_msg', 'Thank you for subscribing!' ) . '</span>';
+
+			wp_send_json_success( $result );
 		} catch ( Exception $exception ) {
 			$result['type'] = 'error';
 			$result['msg']  = '<span class="dsubscribers_error">' . get_option( 'dsubscribers_exists_msg', 'Sorry, this e-mail already exists' ) . '</span>';
 
 			wp_send_json_error( $result );
 		}
-
-		if ( get_option( 'dsubscribers_send_checkbox' ) === 'on' ) {
-
-			$subject = 'The subject';
-
-			$message = get_option( 'dsubscribers_message_block' );
-
-			$headers = 'From: ' . get_bloginfo( 'name' ) . ' <' . get_bloginfo( 'admin_email' ) . '>';
-
-			wp_mail( $dsubscribers_email, $subject, $message, $headers );
-		}
-
-		$result['type'] = 'success';
-		$result['msg']  = '<span class="dsubscribers_success">' . get_option( 'dsubscribers_subscribed_msg', 'Thank you for subscribing!' ) . '</span>';
-
-		wp_send_json_success( $result );
 	}
 
 	/**

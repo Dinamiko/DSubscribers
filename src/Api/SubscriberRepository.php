@@ -35,13 +35,16 @@ class SubscriberRepository {
 				'%s',
 			)
 		);
+
+		do_action( 'dsubscribers_subscribed', $email );
 	}
 
 	/**
 	 * Unsubscribe user with the given email.
 	 *
-	 * @param string $email
+	 * @param string $email User email.
 	 * @return void
+	 * @throws Exception If it could not unsubscribe user.
 	 */
 	public function unsubscribe( string $email ): void {
 		if ( ! $this->email_exist( $email ) ) {
@@ -51,40 +54,50 @@ class SubscriberRepository {
 		global $wpdb;
 		$table_name = $wpdb->prefix . 'dsubscribers';
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery
 		$wpdb->delete( $table_name, array( 'email' => $email ) );
 	}
 
 	/**
 	 * Returns a subscriber entry from the given email.
 	 *
-	 * @param string $email
+	 * @param string $email User email.
 	 * @return array|null
 	 */
 	public function subscriber( string $email ): ?array {
 		global $wpdb;
 		$table_name = $wpdb->prefix . 'dsubscribers';
 
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery
+		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		return $wpdb->get_row(
-			$wpdb->prepare( "SELECT * FROM $table_name WHERE email = %s", $email ),
+			$wpdb->prepare(
+				"SELECT * FROM $table_name WHERE email = %s",
+				sanitize_email( $email )
+			),
 			ARRAY_A
 		);
+		// phpcs:enable
 	}
 
 	/**
 	 * Check whether email exist in the database.
 	 *
-	 * @param wpdb   $wpdb WordPress database.
-	 * @param string $table_name Database table name.
 	 * @param string $user_email User email.
-	 *
 	 * @return bool
 	 */
-	private function email_exist( $user_email ): bool {
+	private function email_exist( string $user_email ): bool {
 		global $wpdb;
 		$table_name = $wpdb->prefix . 'dsubscribers';
 
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery
+		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		return (bool) $wpdb->get_row(
-			$wpdb->prepare( "SELECT * FROM $table_name WHERE email = %s", $user_email )
+			$wpdb->prepare(
+				"SELECT * FROM $table_name WHERE email = %s",
+				sanitize_email( $user_email )
+			)
 		);
+		// phpcs:enable
 	}
 }
