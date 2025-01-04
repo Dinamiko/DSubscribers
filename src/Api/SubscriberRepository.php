@@ -96,9 +96,11 @@ class SubscriberRepository {
 
 		if ( $email ) {
 			$query .= $wpdb->prepare(
-				" WHERE email=%s",
+				" WHERE email=%s LIMIT 1",
 				sanitize_email( $email )
 			);
+
+			return $wpdb->get_results( $query );
 		}
 
 		if ( $args['limit'] ?? '' ) {
