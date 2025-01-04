@@ -4,7 +4,7 @@ import {App} from "./App";
 
 domReady(() => {
     createRoot(
-        document.getElementById('react-settings-page')
+        document.getElementById('dsubscribers-settings')
     ).render(
         <App />
     );

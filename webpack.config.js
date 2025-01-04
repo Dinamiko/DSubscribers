@@ -9,6 +9,7 @@ module.exports = {
             frontend: path.resolve(process.cwd(), 'assets/js', 'frontend.js'),
             "frontend-css": path.resolve(process.cwd(), 'assets/css', 'frontend.css'),
             admin: path.resolve(process.cwd(), 'assets/js/admin', 'settings.js'),
+            "admin-css": path.resolve(process.cwd(), 'assets/css/admin', 'settings.scss'),
         }
     }
 }
