@@ -4,7 +4,7 @@ declare( strict_types = 1 );
 namespace Dinamiko\Dsubscribers\Admin;
 
 class Settings {
-	public function init( string $plugin_file ) {
+	public function init() {
 		add_action( 'admin_menu', function () {
 			add_submenu_page(
 				'dsubscribers',
@@ -18,7 +18,7 @@ class Settings {
 			);
 		} );
 
-		add_action( 'admin_enqueue_scripts', function ( $page ) use ( $plugin_file ) {
+		add_action( 'admin_enqueue_scripts', function ( $page ) {
 			if ( $page !== 'dsubscribers_page_dsubscribers-settings' ) {
 				return;
 			}
@@ -27,7 +27,7 @@ class Settings {
 
 			wp_register_script(
 				'dsubscribers-settings',
-				plugins_url( '/build/admin.js', $plugin_file ),
+				plugins_url( '/build/admin.js', dirname( realpath( __FILE__ ), 2 ) ),
 				$asset_file['dependencies'],
 				$asset_file['version'],
 				true
@@ -40,7 +40,7 @@ class Settings {
 
 			wp_register_style(
 				'dsubscribers-admin-css',
-				plugins_url( '/build/admin-css.css', $plugin_file ),
+				plugins_url( '/build/admin-css.css', dirname( realpath( __FILE__ ), 2 ) ),
 				$scripts_handle_css['dependencies'],
 				$scripts_handle_css['version']
 			);

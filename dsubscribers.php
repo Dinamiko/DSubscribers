@@ -19,6 +19,7 @@ declare( strict_types = 1 );
 
 namespace Dinamiko\Dsubscribers;
 
+use Dinamiko\Dsubscribers\Admin\Subscribers;
 use Dinamiko\Dsubscribers\Frontend\Assets;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -39,8 +40,9 @@ function init(): void {
 	Settings::instance( __FILE__ );
 	Table::instance();
 
-	(new \Dinamiko\Dsubscribers\Admin\Settings())->init(__FILE__);
-	(new Assets())->init(__FILE__);
+	(new Subscribers())->init();
+	(new \Dinamiko\Dsubscribers\Admin\Settings())->init();
+	(new Assets())->init();
 }
 
 add_action( 'plugins_loaded', __NAMESPACE__ . '\\init' );
