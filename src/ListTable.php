@@ -1,8 +1,9 @@
 <?php
-declare( strict_types = 1 );
+declare( strict_types=1 );
 
 namespace Dinamiko\Dsubscribers;
 
+use Dinamiko\Dsubscribers\Api\SubscriberRepository;
 use WP_List_Table;
 use wpdb;
 
@@ -28,68 +29,49 @@ class ListTable extends WP_List_Table {
 	 * @return array
 	 */
 	public function get_columns(): array {
-
-		$columns = array(
+		return [
 			'email'   => __( 'E-mail', 'dsubscribers' ),
 			'time'    => __( 'Created', 'dsubscribers' ),
 			'actions' => __( 'Actions', 'dsubscribers' ),
-		);
-
-		return $columns;
+		];
 	}
 
 	/**
 	 * Prepares the list of items for displaying.
 	 *
 	 * @param string $search The search term.
+	 *
 	 * @return void
 	 */
 	public function prepare_items( string $search = '' ): void {
-		global $wpdb;
-		$table_name = $wpdb->prefix . 'dsubscribers';
+		$repository = new SubscriberRepository();
 
-		if ( $search ) {
-			$query = $wpdb->prepare(
-				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-				"SELECT * FROM $table_name WHERE email=%s",
-				sanitize_text_field( wp_unslash( $search ) )
-			);
+		$total_items = count( $repository->subscribers() );
+		$per_page    = 2;
+		$args        = [];
+		$paged       = sanitize_text_field( wp_unslash( $_GET['paged'] ?? 1 ) );
 
-			// phpcs:disable WordPress.Security.NonceVerification.Recommended
-			$orderby = ! empty( $_GET['orderby'] ) ? sanitize_text_field( wp_unslash( $_GET['orderby'] ) ) : '';
-			$order   = ! empty( $_GET['order'] ) ? sanitize_text_field( wp_unslash( $_GET['order'] ) ) : 'ASC';
-			// phpcs:enable
-
-			if ( ! empty( $orderby ) && ! empty( $order ) ) {
-				$query .= $wpdb->prepare( ' ORDER BY %s %s', $orderby, $order );
-			}
-
-			$query = $this->set_pagination( $wpdb, $query );
-
-			// phpcs:disable WordPress.DB.DirectDatabaseQuery
-			// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared
-			$this->items = $wpdb->get_results( $query );
-			// phpcs:enable
-
-		} else {
-			$query = "SELECT * FROM $table_name ORDER BY id DESC";
-
-			// phpcs:disable WordPress.Security.NonceVerification.Recommended
-			$orderby = ! empty( $_GET['orderby'] ) ? sanitize_text_field( wp_unslash( $_GET['orderby'] ) ) : '';
-			$order   = ! empty( $_GET['order'] ) ? sanitize_text_field( wp_unslash( $_GET['order'] ) ) : 'ASC';
-			// phpcs:enable
-
-			if ( ! empty( $orderby ) & ! empty( $order ) ) {
-				$query .= $wpdb->prepare( ' ORDER BY %s %s', $orderby, $order );
-			}
-
-			$query = $this->set_pagination( $wpdb, $query );
-
-			// phpcs:disable WordPress.DB.DirectDatabaseQuery
-			// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared
-			$this->items = $wpdb->get_results( $query );
-			// phpcs:enable
+		if ( $paged ) {
+			$offset        = ( $paged - 1 ) * $per_page;
+			$args['limit'] = (int) $offset . ',' . $per_page;
 		}
+
+		$items = $repository->subscribers( $args, $search );
+
+		$this->set_pagination_args(
+			array(
+				'total_items' => $total_items,
+				'total_pages' => ceil( $total_items / $per_page ),
+				'per_page'    => $per_page,
+			)
+		);
+
+		$columns               = $this->get_columns();
+		$hidden                = array();
+		$sortable              = $this->get_sortable_columns();
+		$this->_column_headers = array( $columns, $hidden, $sortable );
+
+		$this->items = $items;
 	}
 
 	/**
@@ -160,50 +142,5 @@ class ListTable extends WP_List_Table {
 
 			}
 		}
-	}
-
-	/**
-	 * Set Pagination for the given query.
-	 *
-	 * @param wpdb   $wpdb WordPress database class.
-	 * @param string $query Database query.
-	 *
-	 * @return string|null
-	 */
-	private function set_pagination( wpdb $wpdb, string $query ): ?string {
-		// phpcs:disable WordPress.DB.DirectDatabaseQuery
-		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared
-		$totalitems = $wpdb->query( $query );
-		// phpcs:enable
-
-		$perpage = 5;
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		$paged = ! empty( $_GET['paged'] ) ? sanitize_text_field( wp_unslash( $_GET['paged'] ) ) : '';
-
-		if ( empty( $paged ) || ! is_numeric( $paged ) || $paged <= 0 ) {
-			$paged = 1;
-		}
-
-		$totalpages = ceil( $totalitems / $perpage );
-
-		if ( ! empty( $paged ) && ! empty( $perpage ) ) {
-			$offset = ( $paged - 1 ) * $perpage;
-			$query .= ' LIMIT ' . (int) $offset . ',' . (int) $perpage;
-		}
-
-		$this->set_pagination_args(
-			array(
-				'total_items' => $totalitems,
-				'total_pages' => $totalpages,
-				'per_page'    => $perpage,
-			)
-		);
-
-		$columns               = $this->get_columns();
-		$hidden                = array();
-		$sortable              = $this->get_sortable_columns();
-		$this->_column_headers = array( $columns, $hidden, $sortable );
-
-		return $query;
 	}
 }

@@ -35,7 +35,7 @@ class SubscriberRepositoryTest extends TestCase {
 	}
 
 	public function test_unsubscribe_email_exists() {
-		$this->expectException(Exception::class);
+		$this->expectException( Exception::class );
 
 		$this->repository->subscribe( $this->email );
 		$this->repository->subscribe( $this->email );
@@ -50,8 +50,36 @@ class SubscriberRepositoryTest extends TestCase {
 	}
 
 	public function test_unsubscribe_email_not_exists() {
-		$this->expectException(Exception::class);
+		$this->expectException( Exception::class );
 
 		$this->repository->unsubscribe( $this->email );
+	}
+
+	public function test_subscribers() {
+		$this->assertEquals( 0, count( $this->repository->subscribers() ) );
+
+		$this->repository->subscribe( $this->email );
+		$this->assertEquals( 1, count( $this->repository->subscribers() ) );
+	}
+
+	public function test_subscribers_args() {
+		for ( $i = 0; $i < 5; $i ++ ) {
+			$this->repository->subscribe( "test{$i}@example.com}" );
+		}
+
+		$args = [ 'limit' => 2, ];
+
+		$this->assertEquals( 2, count( $this->repository->subscribers( $args ) ) );
+	}
+
+	public function test_subscribers_by_email() {
+		$this->repository->subscribe( $this->email );
+
+		$subscribers = $this->repository->subscribers( [], $this->email );
+
+		$this->assertEquals(
+			$this->email,
+			$subscribers[0]->email
+		);
 	}
 }

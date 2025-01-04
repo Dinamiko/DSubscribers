@@ -1,5 +1,5 @@
 <?php
-declare( strict_types = 1 );
+declare( strict_types=1 );
 
 namespace Dinamiko\Dsubscribers\Api;
 
@@ -12,6 +12,7 @@ class SubscriberRepository {
 	 * Subscribe user with the given email.
 	 *
 	 * @param string $email User email.
+	 *
 	 * @return void
 	 * @throws Exception If it could not subscribe user.
 	 */
@@ -43,6 +44,7 @@ class SubscriberRepository {
 	 * Unsubscribe user with the given email.
 	 *
 	 * @param string $email User email.
+	 *
 	 * @return void
 	 * @throws Exception If it could not unsubscribe user.
 	 */
@@ -62,6 +64,7 @@ class SubscriberRepository {
 	 * Returns a subscriber entry from the given email.
 	 *
 	 * @param string $email User email.
+	 *
 	 * @return array|null
 	 */
 	public function subscriber( string $email ): ?array {
@@ -81,9 +84,35 @@ class SubscriberRepository {
 	}
 
 	/**
+	 * Returns subscriber entries.
+	 *
+	 * @return array|null
+	 */
+	public function subscribers( array $args = [], string $email = '' ): ?array {
+		global $wpdb;
+		$table_name = $wpdb->prefix . 'dsubscribers';
+
+		$query = "SELECT * FROM $table_name";
+
+		if ( $email ) {
+			$query .= $wpdb->prepare(
+				" WHERE email=%s",
+				sanitize_email( $email )
+			);
+		}
+
+		if ( $args['limit'] ?? '' ) {
+			$query .= " LIMIT {$args['limit']}";
+		}
+
+		return $wpdb->get_results( $query );
+	}
+
+	/**
 	 * Check whether email exist in the database.
 	 *
 	 * @param string $user_email User email.
+	 *
 	 * @return bool
 	 */
 	private function email_exist( string $user_email ): bool {
