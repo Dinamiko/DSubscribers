@@ -37,7 +37,7 @@ class Subscribers {
 			$scripts_handle_css['dependencies'][] = 'wp-components';
 			wp_register_style(
 				'dsubscribers-subscribers-css',
-				plugins_url( '/build/subscribers-css.css', dirname( realpath( __FILE__ ), 2 ) ),
+				plugins_url( '/build/style-subscribers.css', dirname( realpath( __FILE__ ), 2 ) ),
 				$scripts_handle_css['dependencies'],
 				$scripts_handle_css['version']
 			);

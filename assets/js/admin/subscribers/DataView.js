@@ -1,6 +1,7 @@
 import {useState, useMemo} from '@wordpress/element';
 import {DataViews} from "@wordpress/dataviews/wp";
 import {filterSortAndPaginate} from '@wordpress/dataviews';
+import "../../../css/admin/subscribers/subscribers.scss";
 
 const data = [
     {
