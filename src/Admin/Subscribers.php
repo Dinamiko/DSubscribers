@@ -31,6 +31,15 @@ class Subscribers {
 				$asset_file['version'],
 				true
 			);
+
+			wp_localize_script(
+				'dsubscribers-subscribers',
+				'dsubscribersApiSettings',
+				[
+					'nonce' => wp_create_nonce( 'wp_rest' )
+				]
+			);
+
 			wp_enqueue_script( 'dsubscribers-subscribers' );
 
 			$scripts_handle_css                   = require dirname( realpath( __FILE__ ), 3 ) . '/build/subscribers-css.asset.php';

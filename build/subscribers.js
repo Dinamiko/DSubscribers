@@ -20779,19 +20779,15 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-const data = [{
-  id: 1,
-  title: 'Foo'
-}, {
-  id: 2,
-  title: 'Bar'
-}];
 const fields = [{
   id: 'id',
   label: 'ID'
 }, {
-  id: 'title',
-  label: 'Title'
+  id: 'time',
+  label: 'Registration Date'
+}, {
+  id: 'email',
+  label: 'Email'
 }];
 const primaryField = 'id';
 const defaultLayouts = {
@@ -20806,14 +20802,24 @@ function DataView() {
     type: 'table',
     perPage: 10,
     layout: defaultLayouts.table.layout,
-    fields: ['id', 'title']
+    fields: ['id', 'time', 'email']
   });
+  const [data, setData] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)([]);
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
+    fetch('http://localhost:8888/wp-json/dsubscribers/v1/subscribers', {
+      headers: {
+        'X-WP-Nonce': dsubscribersApiSettings.nonce
+      }
+    }).then(response => response.json()).then(data => {
+      setData(data);
+    });
+  }, []);
   const {
     data: processedData,
     paginationInfo
   } = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useMemo)(() => {
     return (0,_wordpress_dataviews__WEBPACK_IMPORTED_MODULE_3__.filterSortAndPaginate)(data, view, fields);
-  }, [view]);
+  }, [view, data]);
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_dataviews_wp__WEBPACK_IMPORTED_MODULE_4__.DataViews, {
     data: processedData,
     fields: fields,
