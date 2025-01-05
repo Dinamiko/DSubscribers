@@ -20,6 +20,7 @@ declare( strict_types = 1 );
 namespace Dinamiko\Dsubscribers;
 
 use Dinamiko\Dsubscribers\Admin\Subscribers;
+use Dinamiko\Dsubscribers\Api\Rest\SubscriberEndpoint;
 use Dinamiko\Dsubscribers\Frontend\Assets;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -41,6 +42,7 @@ function init(): void {
 	Table::instance();
 
 	(new Subscribers())->init();
+	(new SubscriberEndpoint())->register();
 	(new \Dinamiko\Dsubscribers\Admin\Settings())->init();
 	(new Assets())->init();
 }

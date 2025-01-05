@@ -4,7 +4,6 @@ declare( strict_types=1 );
 namespace Dinamiko\Dsubscribers\Api;
 
 use Exception;
-use wpdb;
 
 class SubscriberRepository {
 
