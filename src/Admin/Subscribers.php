@@ -22,7 +22,7 @@ class Subscribers {
 				return;
 			}
 
-			$asset_file = require dirname(realpath(__FILE__), 3) . '/build/subscribers.asset.php';
+			$asset_file = require dirname( realpath( __FILE__ ), 3 ) . '/build/subscribers.asset.php';
 
 			wp_register_script(
 				'dsubscribers-subscribers',
@@ -33,15 +33,18 @@ class Subscribers {
 			);
 			wp_enqueue_script( 'dsubscribers-subscribers' );
 
-			$scripts_handle_css = require dirname(realpath(__FILE__), 3) . '/build/subscribers-css.asset.php';
+			$scripts_handle_css                   = require dirname( realpath( __FILE__ ), 3 ) . '/build/subscribers-css.asset.php';
 			$scripts_handle_css['dependencies'][] = 'wp-components';
-			wp_register_style(
-				'dsubscribers-subscribers-css',
+
+			wp_enqueue_style( 'dsubscribers-subscribers-css',
 				plugins_url( '/build/style-subscribers.css', dirname( realpath( __FILE__ ), 2 ) ),
 				$scripts_handle_css['dependencies'],
-				$scripts_handle_css['version']
-			);
-			wp_enqueue_style( 'dsubscribers-subscribers-css' );
+				$scripts_handle_css['version'] );
+
+			wp_enqueue_style( 'dsubscribers-css',
+				plugins_url( '/build/subscribers-css.css', dirname( realpath( __FILE__ ), 2 ) ),
+				$scripts_handle_css['dependencies'],
+				$scripts_handle_css['version'] );
 		} );
 	}
 }
