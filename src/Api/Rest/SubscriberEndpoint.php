@@ -32,7 +32,7 @@ class SubscriberEndpoint {
 					$repository = new SubscriberRepository();
 					$repository->update( $email, $new_email );
 
-					return new WP_REST_Response( $new_email, 200 );
+					return new WP_REST_Response( null, 204 );
 				},
 				'permission_callback' => static function () {
 					return current_user_can( 'manage_options' );
