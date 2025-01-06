@@ -20918,14 +20918,24 @@ function DataView() {
       });
     }
   }];
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_dataviews_wp__WEBPACK_IMPORTED_MODULE_7__.DataViews, {
-    data: processedData,
-    fields: fields,
-    view: view,
-    onChangeView: setView,
-    defaultLayouts: defaultLayouts,
-    paginationInfo: paginationInfo,
-    actions: actions
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.Fragment, {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.CardFooter, {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalHeading, {
+        children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Subscribers', 'dsubscribers')
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Button, {
+        variant: "secondary",
+        onClick: () => location.href = dsubscribersApiSettings?.export_url,
+        children: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Export .csv', 'dsubscribers')
+      })]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_dataviews_wp__WEBPACK_IMPORTED_MODULE_7__.DataViews, {
+      data: processedData,
+      fields: fields,
+      view: view,
+      onChangeView: setView,
+      defaultLayouts: defaultLayouts,
+      paginationInfo: paginationInfo,
+      actions: actions
+    })]
   });
 }
 

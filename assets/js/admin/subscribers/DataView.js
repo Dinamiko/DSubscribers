@@ -3,7 +3,13 @@ import {useState, useMemo, useEffect} from '@wordpress/element';
 import {DataViews} from "@wordpress/dataviews/wp";
 import {filterSortAndPaginate} from '@wordpress/dataviews';
 import "../../../css/admin/subscribers/subscribers.scss";
-import {Button, __experimentalHStack as HStack, __experimentalText as Text, TextControl} from "@wordpress/components";
+import {
+    Button,
+    __experimentalHStack as HStack,
+    __experimentalText as Text,
+    TextControl,
+    CardFooter, __experimentalHeading as Heading
+} from "@wordpress/components";
 import {__} from "@wordpress/i18n";
 
 const fields = [
@@ -52,7 +58,6 @@ export function DataView() {
     const {data: processedData, paginationInfo} = useMemo(() => {
         return filterSortAndPaginate(data, view, fields);
     }, [view, data]);
-
 
     const actions = [
         {
@@ -141,14 +146,25 @@ export function DataView() {
     ]
 
     return (
-        <DataViews
-            data={processedData}
-            fields={fields}
-            view={view}
-            onChangeView={setView}
-            defaultLayouts={defaultLayouts}
-            paginationInfo={paginationInfo}
-            actions={actions}
-        />
+        <>
+            <CardFooter>
+                <Heading>{__('Subscribers', 'dsubscribers')}</Heading>
+                <Button
+                    variant="secondary"
+                    onClick={() => location.href = dsubscribersApiSettings?.export_url}
+                >
+                    {__('Export .csv', 'dsubscribers')}
+                </Button>
+            </CardFooter>
+            <DataViews
+                data={processedData}
+                fields={fields}
+                view={view}
+                onChangeView={setView}
+                defaultLayouts={defaultLayouts}
+                paginationInfo={paginationInfo}
+                actions={actions}
+            />
+        </>
     )
 }
