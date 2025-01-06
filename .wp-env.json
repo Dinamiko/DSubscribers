@@ -10,5 +10,8 @@
     "development": {
       "phpmyadminPort": 9000
     }
+  },
+  "mappings": {
+    "wp-content/plugins/enable-mailhog.php": "./plugins/enable-mailhog.php"
   }
 }
