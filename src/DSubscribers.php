@@ -1,5 +1,5 @@
 <?php
-declare( strict_types = 1 );
+declare( strict_types=1 );
 
 namespace Dinamiko\Dsubscribers;
 
@@ -141,6 +141,7 @@ class DSubscribers {
 	 * Returns shortcode content.
 	 *
 	 * @param array $atts Shortcode attributes.
+	 *
 	 * @return string
 	 */
 	public function dsubscribers_shortcode( $atts ): string {
@@ -157,7 +158,7 @@ class DSubscribers {
 
 		$content = '<div id="dsubscribers-container">';
 
-			$content .= '<p id="dsubscribers_msg"></p>';
+		$content .= '<p id="dsubscribers_msg"></p>';
 
 		if ( $a['type'] === 'widget' ) {
 
@@ -165,9 +166,9 @@ class DSubscribers {
 
 			$content .= '<form id="form-validation-widget" class="form-container" data-action="">';
 
-				$content .= '<input id="dsubscribers_email" type="email" name="email" placeholder="E-mail" required>';
+			$content .= '<input id="dsubscribers_email" type="email" name="email" placeholder="E-mail" required>';
 
-				$content .= '<input type="submit" value="SUBMIT">';
+			$content .= '<input type="submit" value="SUBMIT">';
 
 			switch ( $a['action'] ) {
 
@@ -181,9 +182,10 @@ class DSubscribers {
 
 			}
 
-				$content .= wp_nonce_field( 'dsubscribers_form_action', 'dsubscribers_form_nonce' );
+			$nonce   = wp_create_nonce( 'dsubscribers_form_action' );
+			$content .= '<input type="hidden" id="dsubscribers_form_nonce" name="dsubscribers_form_nonce" value="' . $nonce . '" />';
 
-				$content .= '</form>';
+			$content .= '</form>';
 
 		} else {
 
@@ -198,9 +200,9 @@ class DSubscribers {
 
 			}
 
-				$content .= '<input id="dsubscribers_email" type="email" name="email" placeholder="E-mail" required>';
+			$content .= '<input id="dsubscribers_email" type="email" name="email" placeholder="E-mail" required>';
 
-				$content .= '<input type="submit" value="SUBMIT">';
+			$content .= '<input type="submit" value="SUBMIT">';
 
 			switch ( $a['action'] ) {
 
@@ -214,9 +216,10 @@ class DSubscribers {
 
 			}
 
-				$content .= wp_nonce_field( 'dsubscribers_form_action', 'dsubscribers_form_nonce' );
+			$nonce   = wp_create_nonce( 'dsubscribers_form_action' );
+			$content .= '<input type="hidden" id="dsubscribers_form_nonce" name="dsubscribers_form_nonce" value="' . $nonce . '" />';
 
-				$content .= '</form>';
+			$content .= '</form>';
 
 		}
 
