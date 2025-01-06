@@ -3,9 +3,8 @@ import {useState, useMemo, useEffect} from '@wordpress/element';
 import {DataViews} from "@wordpress/dataviews/wp";
 import {filterSortAndPaginate} from '@wordpress/dataviews';
 import "../../../css/admin/subscribers/subscribers.scss";
-import {Button, __experimentalHStack as HStack, TextControl} from "@wordpress/components";
+import {Button, __experimentalHStack as HStack, __experimentalText as Text, TextControl} from "@wordpress/components";
 import {__} from "@wordpress/i18n";
-
 
 const fields = [
     {
@@ -58,8 +57,7 @@ export function DataView() {
     const actions = [
         {
             id: 'edit',
-            label: 'Edit',
-            modalHeader: 'Edit',
+            label: __('Edit', 'dsubscribers'),
             RenderModal: ({items: [item], closeModal}) => {
                 const [email, setEmail] = useState('');
                 useEffect(() => {
@@ -105,7 +103,40 @@ export function DataView() {
         },
         {
             id: 'delete',
-            label: 'Delete',
+            label: __('Delete', 'dsubscribers'),
+            RenderModal: ({items: [item], closeModal}) => {
+                const [email, setEmail] = useState('');
+                useEffect(() => {
+                    setEmail(item.email)
+                }, [item])
+
+                const onSubmit = (event) => {
+                    event.preventDefault();
+
+                    apiFetch({
+                        path: `/dsubscribers/v1/subscriber/${email}`,
+                        method: 'DELETE',
+                    }).then(() => {
+                        apiFetch({path: '/dsubscribers/v1/subscribers'})
+                            .then((data) => {
+                                setData(data)
+                                closeModal()
+                            });
+                    })
+                }
+
+                return (
+                    <form onSubmit={onSubmit}>
+                        <HStack>
+                            <Text style={{marginBottom: '20px'}}>Are you sure you want to delete
+                                this <strong>{email}</strong>?</Text>
+                        </HStack>
+                        <HStack>
+                            <Button variant="primary" type="submit">Confirm</Button>
+                        </HStack>
+                    </form>
+                );
+            }
         },
     ]
 

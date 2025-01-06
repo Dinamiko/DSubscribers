@@ -85,6 +85,8 @@ class SubscriberRepository {
 	/**
 	 * Returns subscriber entries.
 	 *
+	 * @param array $args Query arguments.
+	 * @param string $email User email.
 	 * @return array|null
 	 */
 	public function subscribers( array $args = [], string $email = '' ): ?array {
@@ -129,6 +131,19 @@ class SubscriberRepository {
 				'email' => $email,
 			],
 		);
+	}
+
+	/**
+	 * Deletes a subscriber from the given email.
+	 *
+	 * @param string $email User email.
+	 * @return void
+	 */
+	public function delete( string $email ): void {
+		global $wpdb;
+		$table_name = $wpdb->prefix . 'dsubscribers';
+
+		$wpdb->delete( $table_name, array( 'email' => $email ), array( '%s' ) );
 	}
 
 	/**

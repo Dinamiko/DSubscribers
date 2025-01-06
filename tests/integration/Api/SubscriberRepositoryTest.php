@@ -95,4 +95,13 @@ class SubscriberRepositoryTest extends TestCase {
 		$subscriber = $this->repository->subscriber( $newEmail );
 		$this->assertTrue( $subscriber['email'] === $newEmail );
 	}
+
+	public function test_subscriber_delete() {
+		$this->repository->subscribe( $this->email );
+
+		$this->repository->delete( $this->email );
+
+		$subscriber = $this->repository->subscriber( $this->email );
+		$this->assertNull( $subscriber );
+	}
 }

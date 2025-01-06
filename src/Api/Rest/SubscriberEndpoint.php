@@ -39,7 +39,7 @@ class SubscriberEndpoint {
 				},
 			] );
 
-			register_rest_route( 'dsubscribers/v1', '/subscriber/(?P<email>[A-Za-z0-9._+-]+\@[A-Za-z0-9]+\.[A-Za-z]{2,}+)', array(
+			register_rest_route( 'dsubscribers/v1', '/subscriber/(?P<email>[A-Za-z0-9._+-]+\@[A-Za-z0-9]+\.[A-Za-z]{2,}+)', [
 				'methods'             => WP_REST_Server::READABLE,
 				'callback'            => function ( WP_REST_Request $request ) {
 					$email = sanitize_email( $request['email'] );
@@ -52,7 +52,22 @@ class SubscriberEndpoint {
 				'permission_callback' => static function () {
 					return current_user_can( 'manage_options' );
 				},
-			) );
+			] );
+
+			register_rest_route( 'dsubscribers/v1', '/subscriber/(?P<email>[A-Za-z0-9._+-]+\@[A-Za-z0-9]+\.[A-Za-z]{2,}+)', [
+				'methods'             => WP_REST_Server::DELETABLE,
+				'callback'            => function ( WP_REST_Request $request ) {
+					$email = sanitize_email( $request['email'] );
+
+					$repository = new SubscriberRepository();
+					$repository->delete( $email );
+
+					return new WP_REST_Response( null, 204 );
+				},
+				'permission_callback' => static function () {
+					return current_user_can( 'manage_options' );
+				},
+			] );
 		} );
 	}
 }

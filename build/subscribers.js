@@ -20828,8 +20828,7 @@ function DataView() {
   }, [view, data]);
   const actions = [{
     id: 'edit',
-    label: 'Edit',
-    modalHeader: 'Edit',
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Edit', 'dsubscribers'),
     RenderModal: ({
       items: [item],
       closeModal
@@ -20875,7 +20874,49 @@ function DataView() {
     }
   }, {
     id: 'delete',
-    label: 'Delete'
+    label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Delete', 'dsubscribers'),
+    RenderModal: ({
+      items: [item],
+      closeModal
+    }) => {
+      const [email, setEmail] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)('');
+      (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
+        setEmail(item.email);
+      }, [item]);
+      const onSubmit = event => {
+        event.preventDefault();
+        _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_0___default()({
+          path: `/dsubscribers/v1/subscriber/${email}`,
+          method: 'DELETE'
+        }).then(() => {
+          _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_0___default()({
+            path: '/dsubscribers/v1/subscribers'
+          }).then(data => {
+            setData(data);
+            closeModal();
+          });
+        });
+      };
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("form", {
+        onSubmit: onSubmit,
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalHStack, {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalText, {
+            style: {
+              marginBottom: '20px'
+            },
+            children: ["Are you sure you want to delete this ", /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("strong", {
+              children: email
+            }), "?"]
+          })
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalHStack, {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Button, {
+            variant: "primary",
+            type: "submit",
+            children: "Confirm"
+          })
+        })]
+      });
+    }
   }];
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_dataviews_wp__WEBPACK_IMPORTED_MODULE_7__.DataViews, {
     data: processedData,
