@@ -2,7 +2,7 @@ import apiFetch from '@wordpress/api-fetch';
 import {useEffect, useState} from '@wordpress/element';
 import {useDispatch, useSelect} from '@wordpress/data';
 import {__} from '@wordpress/i18n';
-import { store as noticesStore } from '@wordpress/notices';
+import {store as noticesStore} from '@wordpress/notices';
 import {
     __experimentalHeading as Heading,
     Button,
@@ -17,17 +17,19 @@ import {
 
 export function App() {
     const [sendEmail, setSendEmail] = useState(false)
+    const [emailSubject, setEmailSubject] = useState('');
     const [emailMessage, setEmailMessage] = useState('');
     const [subscribedMessage, setSubscribedMessage] = useState('');
     const [existMessage, setExistMessage] = useState('');
     const [unsubscribedMessage, setUnsubscribedMessage] = useState('');
     const [doNotExistMessage, setDoNotExistMessage] = useState('');
 
-    const { createSuccessNotice } = useDispatch( noticesStore );
+    const {createSuccessNotice} = useDispatch(noticesStore);
 
     useEffect(() => {
         apiFetch({path: '/wp/v2/settings'}).then((settings) => {
             setSendEmail(settings.dsubscribers_options.send_email_checkbox);
+            setEmailSubject(settings.dsubscribers_options.email_subject);
             setEmailMessage(settings.dsubscribers_options.email_msg);
             setSubscribedMessage(settings.dsubscribers_options.subscribed_msg);
             setExistMessage(settings.dsubscribers_options.exists_msg);
@@ -43,6 +45,7 @@ export function App() {
             data: {
                 dsubscribers_options: {
                     send_email_checkbox: sendEmail,
+                    email_subject: emailSubject,
                     email_msg: emailMessage,
                     subscribed_msg: subscribedMessage,
                     exists_msg: existMessage,
@@ -51,35 +54,35 @@ export function App() {
                 },
             },
         }).then(() => {
-            window.scrollTo( {
+            window.scrollTo({
                 top: 0,
                 behavior: 'smooth',
-            } );
+            });
 
             createSuccessNotice(
-                __( 'Settings saved.', 'dsuscribers' )
+                __('Settings saved.', 'dsuscribers')
             );
         });
     };
 
     const Notices = () => {
-        const { removeNotice } = useDispatch( noticesStore );
-        const notices = useSelect( ( select ) =>
-            select( noticesStore ).getNotices()
+        const {removeNotice} = useDispatch(noticesStore);
+        const notices = useSelect((select) =>
+            select(noticesStore).getNotices()
         );
 
-        if ( notices.length === 0 ) {
+        if (notices.length === 0) {
             return null;
         }
 
-        return <NoticeList notices={ notices } onRemove={ removeNotice } />;
+        return <NoticeList notices={notices} onRemove={removeNotice}/>;
     }
 
     return (
         <>
             <Heading level={3}
                      adjustLineHeightForInnerControls="large">{__('DSubscribers Settings', 'dsubscribers')}</Heading>
-            <Notices />
+            <Notices/>
             <Panel>
                 <PanelBody
                     title={__('Subscriber E-mail', 'dsubscribers')}
@@ -89,6 +92,15 @@ export function App() {
                             checked={sendEmail}
                             label={__('Send E-mail to subscriber', 'dsubscribers')}
                             onChange={() => setSendEmail((state) => !state)}
+                        />
+                    </PanelRow>
+                    <PanelRow>
+                        <TextControl
+                            label={__('Email Subject', 'dsubscribers')}
+                            value={emailSubject}
+                            onChange={(value) => {
+                                setEmailSubject(value)
+                            }}
                         />
                     </PanelRow>
                     <PanelRow>

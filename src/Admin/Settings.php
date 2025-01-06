@@ -1,5 +1,5 @@
 <?php
-declare( strict_types = 1 );
+declare( strict_types=1 );
 
 namespace Dinamiko\Dsubscribers\Admin;
 
@@ -23,7 +23,7 @@ class Settings {
 				return;
 			}
 
-			$asset_file = require dirname(realpath(__FILE__), 3) . '/build/admin.asset.php';
+			$asset_file = require dirname( realpath( __FILE__ ), 3 ) . '/build/admin.asset.php';
 
 			wp_register_script(
 				'dsubscribers-settings',
@@ -36,7 +36,7 @@ class Settings {
 			wp_enqueue_script( 'dsubscribers-settings' );
 			wp_enqueue_style( 'wp-components' );
 
-			$scripts_handle_css = require dirname(realpath(__FILE__), 3) . '/build/admin-css.asset.php';
+			$scripts_handle_css = require dirname( realpath( __FILE__ ), 3 ) . '/build/admin-css.asset.php';
 
 			wp_register_style(
 				'dsubscribers-admin-css',
@@ -48,18 +48,22 @@ class Settings {
 		} );
 
 		add_action( 'dsubscribers_subscribed', function ( string $email ) {
-			if ( get_option( 'dsubscribers_send_checkbox' ) === 'on' ) {
-				$subject = 'The subject';
-				$message = get_option( 'dsubscribers_message_block' );
-				$headers = 'From: ' . get_bloginfo( 'name' ) . ' <' . get_bloginfo( 'admin_email' ) . '>';
+			$settings = get_option( 'dsubscribers_options' );
+			if($settings) {
+				if ( $settings['send_email_checkbox'] ) {
+					$subject = esc_html($settings['email_subject']);
+					$message = wp_kses_post($settings['email_msg']);
+					$headers = 'From: ' . esc_attr(get_bloginfo( 'name' )) . ' <' . get_bloginfo( 'admin_email' ) . '>';
 
-				wp_mail( $email, $subject, $message, $headers );
+					wp_mail( $email, $subject, $message, $headers );
+				}
 			}
 		} );
 
 		add_action( 'init', function () {
 			$default = array(
 				'send_email_checkbox' => false,
+				'email_subject'       => __( 'Thank you for subscribing!', 'dsubscribers' ),
 				'email_msg'           => __( 'Thank you for subscribing!', 'dsubscribers' ),
 				'subscribed_msg'      => __( 'Thank you for subscribing!', 'dsubscribers' ),
 				'exists_msg'          => __( 'Sorry, this e-mail already exists', 'dsubscribers' ),
@@ -72,6 +76,9 @@ class Settings {
 				'properties' => array(
 					'send_email_checkbox' => array(
 						'type' => 'boolean',
+					),
+					'email_subject'       => array(
+						'type' => 'string',
 					),
 					'email_msg'           => array(
 						'type' => 'string',

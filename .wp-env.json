@@ -5,5 +5,10 @@
     "https://downloads.wordpress.org/plugin/classic-widgets.0.3.zip",
     "ssh://git@github.com/WP-API/Basic-Auth.git"
   ],
-  "phpVersion": "7.4"
+  "phpVersion": "7.4",
+  "env": {
+    "development": {
+      "phpmyadminPort": 9000
+    }
+  }
 }

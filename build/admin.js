@@ -35,6 +35,7 @@ __webpack_require__.r(__webpack_exports__);
 
 function App() {
   const [sendEmail, setSendEmail] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
+  const [emailSubject, setEmailSubject] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)('');
   const [emailMessage, setEmailMessage] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)('');
   const [subscribedMessage, setSubscribedMessage] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)('');
   const [existMessage, setExistMessage] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)('');
@@ -48,6 +49,7 @@ function App() {
       path: '/wp/v2/settings'
     }).then(settings => {
       setSendEmail(settings.dsubscribers_options.send_email_checkbox);
+      setEmailSubject(settings.dsubscribers_options.email_subject);
       setEmailMessage(settings.dsubscribers_options.email_msg);
       setSubscribedMessage(settings.dsubscribers_options.subscribed_msg);
       setExistMessage(settings.dsubscribers_options.exists_msg);
@@ -62,6 +64,7 @@ function App() {
       data: {
         dsubscribers_options: {
           send_email_checkbox: sendEmail,
+          email_subject: emailSubject,
           email_msg: emailMessage,
           subscribed_msg: subscribedMessage,
           exists_msg: existMessage,
@@ -103,6 +106,14 @@ function App() {
             checked: sendEmail,
             label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Send E-mail to subscriber', 'dsubscribers'),
             onChange: () => setSendEmail(state => !state)
+          })
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.TextControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_3__.__)('Email Subject', 'dsubscribers'),
+            value: emailSubject,
+            onChange: value => {
+              setEmailSubject(value);
+            }
           })
         }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.PanelRow, {
           children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_5__.TextareaControl, {
