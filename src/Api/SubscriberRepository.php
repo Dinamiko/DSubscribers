@@ -110,6 +110,28 @@ class SubscriberRepository {
 	}
 
 	/**
+	 * Updates subscriber with the given email.
+	 *
+	 * @param string $email User email.
+	 * @param string $new_email New email to update.
+	 * @return void
+	 */
+	public function update( string $email, string $new_email ): void {
+		global $wpdb;
+		$table_name = $wpdb->prefix . 'dsubscribers';
+
+		$wpdb->update(
+			$table_name,
+			[
+				'email' => $new_email,
+			],
+			[
+				'email' => $email,
+			],
+		);
+	}
+
+	/**
 	 * Check whether email exist in the database.
 	 *
 	 * @param string $user_email User email.

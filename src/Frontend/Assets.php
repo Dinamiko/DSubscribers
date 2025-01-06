@@ -13,7 +13,7 @@ class Assets {
 
 				wp_register_script(
 					'dsubscribers-frontend-js',
-					plugins_url( '/build/frontend.js', dirname( realpath( __FILE__ ), 3 ) ),
+					plugins_url( '/build/frontend.js', dirname( realpath( __FILE__ ), 2 ) ),
 					$scripts_handle['dependencies'],
 					$scripts_handle['version'],
 					true
@@ -32,7 +32,7 @@ class Assets {
 
 				wp_register_style(
 					'dsubscribers-frontend-css',
-					plugins_url( '/build/frontend-css.css', dirname( realpath( __FILE__ ), 3 ) ),
+					plugins_url( '/build/frontend-css.css', dirname( realpath( __FILE__ ), 2 ) ),
 					$scripts_handle_css['dependencies'],
 					$scripts_handle_css['version']
 				);

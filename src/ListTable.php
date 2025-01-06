@@ -47,7 +47,7 @@ class ListTable extends WP_List_Table {
 		$repository = new SubscriberRepository();
 
 		$total_items = count( $repository->subscribers() );
-		$per_page    = 2;
+		$per_page    = 10;
 		$args        = [];
 		$paged       = sanitize_text_field( wp_unslash( $_GET['paged'] ?? 1 ) );
 

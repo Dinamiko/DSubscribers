@@ -82,4 +82,17 @@ class SubscriberRepositoryTest extends TestCase {
 			$subscribers[0]->email
 		);
 	}
+
+	public function test_suscribers_update() {
+		$this->repository->subscribe( $this->email );
+		$newEmail = 'new@example.com';
+
+		$this->repository->update(
+			$this->email,
+			$newEmail
+		);
+
+		$subscriber = $this->repository->subscriber( $newEmail );
+		$this->assertTrue( $subscriber['email'] === $newEmail );
+	}
 }

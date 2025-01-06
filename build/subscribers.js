@@ -20767,13 +20767,22 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   DataView: () => (/* binding */ DataView)
 /* harmony export */ });
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
-/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _wordpress_dataviews_wp__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/dataviews/wp */ "./node_modules/@wordpress/dataviews/build-wp/index.js");
-/* harmony import */ var _wordpress_dataviews__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/dataviews */ "./node_modules/@wordpress/dataviews/build-module/filter-and-sort-data-view.js");
-/* harmony import */ var _css_admin_subscribers_subscribers_scss__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../css/admin/subscribers/subscribers.scss */ "./assets/css/admin/subscribers/subscribers.scss");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/api-fetch */ "@wordpress/api-fetch");
+/* harmony import */ var _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _wordpress_dataviews_wp__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @wordpress/dataviews/wp */ "./node_modules/@wordpress/dataviews/build-wp/index.js");
+/* harmony import */ var _wordpress_dataviews__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @wordpress/dataviews */ "./node_modules/@wordpress/dataviews/build-module/filter-and-sort-data-view.js");
+/* harmony import */ var _css_admin_subscribers_subscribers_scss__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../css/admin/subscribers/subscribers.scss */ "./assets/css/admin/subscribers/subscribers.scss");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
+/* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/i18n */ "@wordpress/i18n");
+/* harmony import */ var _wordpress_i18n__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__);
+
+
+
 
 
 
@@ -20787,7 +20796,8 @@ const fields = [{
   label: 'Registration Date'
 }, {
   id: 'email',
-  label: 'Email'
+  label: 'Email',
+  enableGlobalSearch: true
 }];
 const primaryField = 'id';
 const defaultLayouts = {
@@ -20798,35 +20808,83 @@ const defaultLayouts = {
   }
 };
 function DataView() {
-  const [view, setView] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)({
+  const [view, setView] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)({
     type: 'table',
     perPage: 10,
     layout: defaultLayouts.table.layout,
     fields: ['id', 'time', 'email']
   });
-  const [data, setData] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useState)([]);
-  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useEffect)(() => {
-    fetch('http://localhost:8888/wp-json/dsubscribers/v1/subscribers', {
-      headers: {
-        'X-WP-Nonce': dsubscribersApiSettings.nonce
-      }
-    }).then(response => response.json()).then(data => {
-      setData(data);
-    });
+  const [data, setData] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)([]);
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
+    _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_0___default()({
+      path: '/dsubscribers/v1/subscribers'
+    }).then(data => setData(data));
   }, []);
   const {
     data: processedData,
     paginationInfo
-  } = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.useMemo)(() => {
-    return (0,_wordpress_dataviews__WEBPACK_IMPORTED_MODULE_3__.filterSortAndPaginate)(data, view, fields);
+  } = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useMemo)(() => {
+    return (0,_wordpress_dataviews__WEBPACK_IMPORTED_MODULE_6__.filterSortAndPaginate)(data, view, fields);
   }, [view, data]);
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_2__.jsx)(_wordpress_dataviews_wp__WEBPACK_IMPORTED_MODULE_4__.DataViews, {
+  const actions = [{
+    id: 'edit',
+    label: 'Edit',
+    modalHeader: 'Edit',
+    RenderModal: ({
+      items: [item],
+      closeModal
+    }) => {
+      const [email, setEmail] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useState)('');
+      (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
+        setEmail(item.email);
+      }, [item]);
+      const onSubmit = event => {
+        event.preventDefault();
+        _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_0___default()({
+          path: '/dsubscribers/v1/subscriber',
+          method: 'PUT',
+          data: {
+            "email": item.email,
+            "new_email": email
+          }
+        }).then(() => {
+          _wordpress_api_fetch__WEBPACK_IMPORTED_MODULE_0___default()({
+            path: '/dsubscribers/v1/subscribers'
+          }).then(data => {
+            setData(data);
+            closeModal();
+          });
+        });
+      };
+      return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("form", {
+        onSubmit: onSubmit,
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalHStack, {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.TextControl, {
+            label: (0,_wordpress_i18n__WEBPACK_IMPORTED_MODULE_4__.__)('Email', 'dsubscribers'),
+            value: email,
+            onChange: value => setEmail(value)
+          })
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.__experimentalHStack, {
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_3__.Button, {
+            variant: "primary",
+            type: "submit",
+            children: "Submit"
+          })
+        })]
+      });
+    }
+  }, {
+    id: 'delete',
+    label: 'Delete'
+  }];
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_dataviews_wp__WEBPACK_IMPORTED_MODULE_7__.DataViews, {
     data: processedData,
     fields: fields,
     view: view,
     onChangeView: setView,
     defaultLayouts: defaultLayouts,
-    paginationInfo: paginationInfo
+    paginationInfo: paginationInfo,
+    actions: actions
   });
 }
 
@@ -22735,6 +22793,17 @@ module.exports = window["ReactDOM"];
 
 "use strict";
 module.exports = window["ReactJSXRuntime"];
+
+/***/ }),
+
+/***/ "@wordpress/api-fetch":
+/*!**********************************!*\
+  !*** external ["wp","apiFetch"] ***!
+  \**********************************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = window["wp"]["apiFetch"];
 
 /***/ }),
 
