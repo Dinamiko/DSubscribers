@@ -34,7 +34,7 @@ class SubscriberRepositoryTest extends TestCase {
 		$this->assertTrue( $subscriber['email'] === $this->email );
 	}
 
-	public function test_unsubscribe_email_exists() {
+	public function test_subscribe_email_exists() {
 		$this->expectException( Exception::class );
 
 		$this->repository->subscribe( $this->email );

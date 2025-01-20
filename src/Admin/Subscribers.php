@@ -75,7 +75,11 @@ class Subscribers {
 				return;
 			}
 
-			(new Export())->csv();
+			( new Export() )->csv();
+		} );
+
+		add_action( 'init', function () {
+			register_block_type( dirname( realpath( __FILE__ ), 3 ) . '/build/js/blocks/subscribe' );
 		} );
 	}
 }
