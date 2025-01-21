@@ -11,7 +11,17 @@
   "supports": {
     "html": false
   },
-  "textdomain": "subscribe",
+  "attributes": {
+    "placeholder": {
+      "type": "string",
+      "default": "jane@example.com"
+    },
+    "buttonText": {
+      "type": "string",
+      "default": "Subscribe"
+    }
+  },
+  "textdomain": "dsubscribers",
   "editorScript": "file:./index.js",
   "editorStyle": "file:./index.css",
   "style": "file:./style-index.css",

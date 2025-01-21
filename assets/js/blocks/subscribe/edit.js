@@ -29,10 +29,12 @@ import './editor.scss';
  *
  * @return {Element} Element to render.
  */
-export default function Edit() {
+export default function Edit({attributes, setAttributes}) {
+	const {placeholder, buttonText} = attributes;
 	return (
-		<p { ...useBlockProps() }>
+		<div { ...useBlockProps() }>
+			<input type="email" placeholder={placeholder} value={}/>
 			{ __( 'Subscribe – hello from the editor!', 'subscribe' ) }
-		</p>
+		</div>
 	);
 }

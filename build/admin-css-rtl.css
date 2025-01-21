@@ -1,1 +1,21 @@
-#dsubscribers-settings{max-width:800px}#dsubscribers-settings .components-base-control:has(textarea,input){flex-basis:600px}#dsubscribers-settings .components-panel{margin-block-end:8px}#dsubscribers-settings .components-notice-list{margin-bottom:16px}#dsubscribers-settings .components-panel{padding-bottom:16px}#dsubscribers-settings .components-panel__row{margin-bottom:16px}
+/*!*******************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[4].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[4].use[2]!./node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[4].use[3]!./assets/css/admin/settings.scss ***!
+  \*******************************************************************************************************************************************************************************************************************************************************/
+#dsubscribers-settings {
+  max-width: 800px;
+}
+#dsubscribers-settings .components-base-control:has(textarea, input) {
+  flex-basis: 600px;
+}
+#dsubscribers-settings .components-panel {
+  margin-block-end: 8px;
+}
+#dsubscribers-settings .components-notice-list {
+  margin-bottom: 16px;
+}
+#dsubscribers-settings .components-panel {
+  padding-bottom: 16px;
+}
+#dsubscribers-settings .components-panel__row {
+  margin-bottom: 16px;
+}
