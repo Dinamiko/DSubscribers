@@ -1,0 +1,23 @@
+#dsubscribers-settings {
+  max-width: 800px;
+
+  .components-base-control:has(textarea, input) {
+    flex-basis: 600px;
+  }
+
+  .components-panel {
+    margin-block-end: 8px;
+  }
+
+  .components-notice-list {
+    margin-bottom: 16px;
+  }
+
+  .components-panel {
+    padding-bottom: 16px;
+  }
+
+  .components-panel__row {
+    margin-bottom: 16px;
+  }
+}

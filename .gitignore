@@ -1,2 +1,8 @@
 .idea
 .DS_Store
+node_modules
+artifacts
+test-results
+wordpress
+/vendor/
+.phpunit.cache

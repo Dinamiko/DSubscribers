@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * Plugin Name: DSubscribers
  * Version: 1.2.2
  * Description: Manage subscribers from your site with ease
@@ -11,28 +11,63 @@
  * Domain Path: /languages
  * License: GPLv2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
+ *
+ * @package Dinamiko\Dsubscribers
  */
 
-if ( ! defined( 'ABSPATH' ) ) exit;
+declare( strict_types = 1 );
 
-require_once( 'includes/class-dsubscribers.php' );
-require_once( 'includes/class-dsubscribers-settings.php' );
-require_once( 'includes/class-dsubscribers-table.php' );
+namespace Dinamiko\Dsubscribers;
 
-function DSubscribers () {
+use Dinamiko\Dsubscribers\Admin\Subscribers;
+use Dinamiko\Dsubscribers\Api\Rest\SubscriberEndpoint;
+use Dinamiko\Dsubscribers\Frontend\Assets;
 
-	$instance = DSubscribers::instance( __FILE__, '1.2.1' );
-
-	if( is_null( $instance->settings ) ) {
-
-		$instance->settings = DSubscribers_Settings::instance( $instance );
-
-	}
-
-	$instance->table = DSubscribers_Table::instance( $instance );
-
-	return $instance;
-
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
 }
 
-DSubscribers();
+if ( is_readable( __DIR__ . '/vendor/autoload.php' ) ) {
+	include_once __DIR__ . '/vendor/autoload.php';
+}
+
+/**
+ * Initializes the plugin.
+ *
+ * @return void
+ */
+function init(): void {
+	DSubscribers::instance( __FILE__, '1.2.2' );
+	Settings::instance( __FILE__ );
+	Table::instance();
+
+	(new Subscribers())->init();
+	(new SubscriberEndpoint())->register();
+	(new \Dinamiko\Dsubscribers\Admin\Settings())->init();
+	(new Assets())->init();
+}
+
+add_action( 'plugins_loaded', __NAMESPACE__ . '\\init' );
+
+register_activation_hook( __FILE__, function () {
+	update_option( 'dsubscribers_version', '1.2.2' );
+
+	global $wpdb;
+	global $jal_db_version;
+
+	$table_name = $wpdb->prefix . 'dsubscribers';
+
+	$sql = "CREATE TABLE $table_name (
+			  		id mediumint(9) NOT NULL AUTO_INCREMENT,
+			  		time datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
+			  		email VARCHAR(200) DEFAULT '' NOT NULL,
+					UNIQUE KEY id (id)
+				);";
+
+	require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+	dbDelta( $sql );
+
+	add_option( 'jal_db_version', $jal_db_version );
+});
+
+

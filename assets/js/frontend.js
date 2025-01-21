@@ -1,163 +1,29 @@
-jQuery(document).ready(function($) {
-	
-	jQuery.validator.setDefaults({
-	  debug: false,
-	  success: "valid"
-	});
+document.addEventListener('DOMContentLoaded', () => {
 
-	var form = $( "#form-validation" );
+    const handleSubscribeForm = (formId, msgId) => {
+        const form = document.getElementById(formId)
+        form?.addEventListener('submit', (event) => {
+            event.preventDefault();
 
-	form.validate();
-	
-	$( "#form-validation" ).submit(function(e) {
+            const data = new FormData();
+            data.append('action', 'dsubscribers_ajax');
+            data.append('dsubscribers_action', document.querySelector(`#${formId} input#dsubscribers_action`).value);
+            data.append('dsubscribers_email', document.querySelector(`#${formId} input#dsubscribers_email`).value);
+            data.append('dsubscribers_nonce', document.querySelector(`#${formId} input#dsubscribers_form_nonce`).value);
 
-		e.preventDefault();
-		
-		if( form.valid() ) {
+            fetch(dsubscribers_data.ajax_url, {
+                method: 'POST',
+                body: data
+            }).then((response) => {
+                return response.json();
+            }).then((data) => {
+                document.getElementById(msgId).innerHTML = data.data.msg;
+                document.querySelector(`#${formId} input#dsubscribers_email`).value = '';
+            });
+        });
+    }
 
-			//var ajaxurl = $(this).attr('action');
-			//var ajaxurl = ajaxurl;
-			var dsubscribers_action = $(this).find('#dsubscribers_action').val();
-			var dsubscribers_email = $(this).find('#dsubscribers_email').val();
-			//var dsubscribers_nonce = $(this).find('#dsubscribers_nonce').val();
-
-			var dsubscribers_nonce = $('#dsubscribers_form_nonce').val();
-
-		   	jQuery.ajax({
-
-		         type : 'post',
-		         dataType : 'json',
-		         url : ajaxurl,
-		         data : { 	action: 'dsubscribers_ajax', 
-		         			dsubscribers_action:dsubscribers_action, 
-		         			dsubscribers_email:dsubscribers_email,
-		         			dsubscribers_nonce:dsubscribers_nonce 
-		         		},
-
-		         success: function( response ) {
-
-		            if( response.type == 'success' ) {
-
-		            	$('#dsubscribers_msg').html( response.msg );
-		            	$('#dsubscribers_email').val('');
-
-
-		            } else {
-
-		               $('#dsubscribers_msg').html( response.msg );
-		               $('#dsubscribers_email').val('');
-
-		            }
-		            
-		         }
-
-		    });		
-
-		}
-
-	});
-
-	var form_widget = $( "#form-validation-widget" );
-
-	form_widget.validate();
-	
-	$( "#form-validation-widget" ).submit(function(e) {
-
-		e.preventDefault();
-		
-		if( form_widget.valid() ) {
-
-			//var ajaxurl = $(this).attr('action');
-			var dsubscribers_action = $(this).find('#dsubscribers_action').val();
-			var dsubscribers_email = $(this).find('#dsubscribers_email').val();
-			//var dsubscribers_nonce = $(this).find('#dsubscribers_nonce').val();
-			var dsubscribers_nonce = $('#dsubscribers_form_nonce').val();
-
-		   	jQuery.ajax({
-
-		         type : 'post',
-		         dataType : 'json',
-		         url : ajaxurl,
-		         data : { 	action: 'dsubscribers_ajax', 
-		         			dsubscribers_action:dsubscribers_action, 
-		         			dsubscribers_email:dsubscribers_email,
-		         			dsubscribers_nonce:dsubscribers_nonce 
-		         		},
-
-		         success: function( response ) {
-
-		            if( response.type == 'success' ) {
-
-		            	$('#dsubscribers_msg_widget').html( response.msg );
-		            	$('#dsubscribers_email_widget').val('');
-
-
-		            } else {
-
-		               $('#dsubscribers_msg_widget').html( response.msg );
-		               $('#dsubscribers_email_widget').val('');
-
-		            }
-		            
-		         }
-
-		    });		
-
-		}
-
-	});
-
-	var form_unsubscribe = $( "#form-validation-unsubscribe" );
-
-	form_unsubscribe.validate();
-
-	$( "#form-validation-unsubscribe" ).submit(function(e) {
-
-		e.preventDefault();
-		
-		if( form_unsubscribe.valid() ) {
-
-			//var ajaxurl = $(this).attr('action');
-			//var ajaxurl = ajaxurl;
-			var dsubscribers_action = $(this).find('#dsubscribers_action').val();
-			var dsubscribers_email = $(this).find('#dsubscribers_email').val();
-			//var dsubscribers_nonce = $(this).find('#dsubscribers_nonce').val();
-
-			var dsubscribers_nonce = $('#dsubscribers_form_nonce').val();
-
-		   	jQuery.ajax({
-
-		         type : 'post',
-		         dataType : 'json',
-		         url : ajaxurl,
-		         data : { 	action: 'dsubscribers_ajax', 
-		         			dsubscribers_action:dsubscribers_action, 
-		         			dsubscribers_email:dsubscribers_email,
-		         			dsubscribers_nonce:dsubscribers_nonce 
-		         		},
-
-		         success: function( response ) {
-
-		            if( response.type == 'success' ) {
-
-		            	$('#dsubscribers_unsubscribe_msg').html( response.msg );
-		            	$('#dsubscribers_email').val('');
-
-
-		            } else {
-
-		               $('#dsubscribers_unsubscribe_msg').html( response.msg );
-		               $('#dsubscribers_email').val('');
-
-		            }
-		            
-		         }
-
-		    });		
-
-		}
-
-	});
-
-	
+    handleSubscribeForm('form-validation', 'dsubscribers_msg');
+    handleSubscribeForm('form-validation-unsubscribe', 'dsubscribers_unsubscribe_msg');
+    handleSubscribeForm('form-validation-widget', 'dsubscribers_msg_widget');
 });

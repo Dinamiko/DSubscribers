@@ -1,0 +1,30 @@
+name: CI
+
+on: push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php-versions: ['7.4']
+
+    name: PHP ${{ matrix.php-versions }}
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-versions }}
+
+      - name: Validate composer.json and composer.lock
+        run: composer validate
+
+      - name: Install dependencies
+        uses: ramsey/composer-install@v1
+        with:
+          composer-options: "--prefer-dist"
+
+      - name: Run PHPCS
+        run: ./vendor/bin/phpcs --runtime-set ignore_warnings_on_exit 1 src dsubscribers.php --extensions=php
